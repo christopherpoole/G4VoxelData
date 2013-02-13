@@ -85,7 +85,6 @@ class DicomDataIO : public G4VoxelDataIO {
             
             if (i == filenames.size()-1)
                 last_position = vd->origin[2];
-            break;
         }
 
         voxel_data->ndims = 3;
