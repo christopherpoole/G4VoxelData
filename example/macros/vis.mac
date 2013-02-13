@@ -1,0 +1,27 @@
+/vis/verbose 0
+/vis/open OGLIX 800x800-0+50
+/vis/drawVolume
+
+#/vis/scene/add/axes      0 0 0 1000 mm # iso
+
+/vis/scene/add/axes      0 0 1003.5 100 mm # target
+/vis/scene/add/axes      0 0 983.4 100 mm   # collimator
+/vis/scene/add/axes      0 0 867.5 100 mm   # flattening filter
+#/vis/scene/add/axes      0 0 835.6 100 mm   # ion chamber
+#/vis/scene/add/axes      0 0 817.5 100 mm   # backscatter plate
+#/vis/scene/add/axes      0 0 814.4 100 mm  # mirror
+/vis/scene/add/axes      0 0 702.6 100 mm  # mlc
+/vis/scene/add/axes      0 0 604 100 mm    # xjaws
+/vis/scene/add/axes      0 0 569 100 mm    # yjaws
+#/vis/scene/add/axes      0 0 480 100 mm    # wires
+
+/vis/viewer/set/viewpointThetaPhi 90 0
+#/vis/viewer/zoom 10
+/vis/viewer/set/style solid
+/vis/viewer/set/hiddenEdge 1
+
+/vis/scene/add/trajectories
+/vis/scene/endOfEventAction accumulate
+
+#/run/beamOn 100
+
