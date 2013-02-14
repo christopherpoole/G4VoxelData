@@ -16,15 +16,15 @@ project(GEANT4_VOXELDATA)
 find_package(Geant4 REQUIRED ui_all vis_all)
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/../source/include)
+include_directories(${PROJECT_SOURCE_DIR}/../include)
 
 # GDCM
 find_package(GDCM REQUIRED)
 include(${GDCM_USE_FILE})
 
 # User code
-file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc ${PROJECT_SOURCE_DIR}/../source/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/../source/include)
+file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/../include)
 
 add_executable(VoxelDataExample VoxelDataExample.cc ${sources} ${headers})
 
