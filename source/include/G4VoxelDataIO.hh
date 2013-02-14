@@ -38,12 +38,21 @@
 
 class G4VoxelDataIO {
   public:
-    G4VoxelDataIO();
-    ~G4VoxelDataIO();
+    G4VoxelDataIO() {};
+    ~G4VoxelDataIO() {};
 
   public:
-    virtual G4VoxelData* Read(G4String filename);
-    virtual void Write(G4String filename);
+    virtual G4VoxelData* Read(G4String) {
+        G4Exception("G4VoxelData::Read", "Reading data not implemented.",
+                FatalException, "");
+
+        return NULL;
+    };
+
+    virtual void Write(G4String) {
+        G4Exception("G4VoxelData::Write", "Writing data not implemented.",
+                FatalException, "");
+    };
 };
 
 #endif // G4VOXELDATAIO_H

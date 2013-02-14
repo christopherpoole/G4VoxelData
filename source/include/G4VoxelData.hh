@@ -61,9 +61,23 @@ class G4VoxelData {
                 unsigned int* shape,
                 double* spacing,
                 double* origin,
-                DataType type);
+                DataType type) {
+        this->array = array;
+        this->length = length;
+        this->ndims = ndims;
+        this->shape = shape;
+        this->spacing = spacing;
+        this->origin = origin;
+        this->type = type;
 
-    ~G4VoxelData();
+        // Register the current instance in the store for
+        // automatic garbage collection.
+        G4VoxelDataStore<G4VoxelData*>::GetInstance()->Register(this);
+    };
+
+    ~G4VoxelData() {
+        delete array;   
+    };
 
   public:
     std::vector<char>* array;

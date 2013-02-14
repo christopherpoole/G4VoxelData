@@ -29,10 +29,11 @@
 #ifndef G4VOXELDATASTORE_H
 #define G4VOXELDATASTORE_H
 
+// STL //
 #include <vector>
 
-// G4VOXELDATA //
-#include "G4VoxelData.hh"
+// GEANT4 //
+#include "globals.hh"
 
 template <typename T>
 class G4VoxelDataStore : public std::vector<T>
@@ -58,7 +59,6 @@ class G4VoxelDataStore : public std::vector<T>
         GetInstance()->push_back(voxel_data);
     };
 
-    //static void DeRegister(G4VoxelData* voxel_data)
     static void DeRegister(T)
     {
         if (!locked) {
@@ -75,7 +75,7 @@ class G4VoxelDataStore : public std::vector<T>
 
     static void Clean()
     {
-        //locked = true;  
+        locked = true;  
 
         size_t i=0;
         G4VoxelDataStore* store = GetInstance();
@@ -88,7 +88,7 @@ class G4VoxelDataStore : public std::vector<T>
             i++;
         }
 
-        //locked = false;
+        locked = false;
         store->clear();
     };
 
