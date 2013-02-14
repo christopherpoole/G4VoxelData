@@ -29,29 +29,82 @@
 #ifndef G4VOXELDATASTORE_H
 #define G4VOXELDATASTORE_H
 
+#include <vector>
+
 // G4VOXELDATA //
 #include "G4VoxelData.hh"
 
-class G4VoxelDataStore : public std::vector<G4VoxelData*>
+template <typename T>
+class G4VoxelDataStore : public std::vector<T>
 {
   public:
-    virtual ~G4VoxelDataStore();
+    virtual ~G4VoxelDataStore()
+    {
+        Clean();   
+    };
     
-    static G4VoxelDataStore* GetInstance();
-    static void Register(G4VoxelData* voxel_data);
-    static void DeRegister(G4VoxelData* voxel_data);
-    static void Clean();
+    static G4VoxelDataStore<T>* GetInstance()
+    {
+        static G4VoxelDataStore<T> voxel_data_store;
+        if (!instance)
+        {
+            instance = &voxel_data_store;
+        }
+        return instance;
+    };
+    
+    static void Register(T voxel_data)
+    {
+        GetInstance()->push_back(voxel_data);
+    };
 
-//    G4VoxelData* GetVoxelData(const G4String& name, G4bool verbose=true) const;
+    //static void DeRegister(G4VoxelData* voxel_data)
+    static void DeRegister(T)
+    {
+        if (!locked) {
+            G4VoxelDataStore* store = GetInstance();
+            
+            for (typename std::vector<T>::iterator current=store->begin(); current!=store->end(); current++) {
+                //if (**current == *voxel_data) {
+                //    store->erase(current);
+                //    break;
+                //}
+            }
+        }
+    };
+
+    static void Clean()
+    {
+        //locked = true;  
+
+        size_t i=0;
+        G4VoxelDataStore* store = GetInstance();
+
+        for(typename std::vector<T>::iterator current=store->begin();
+            current!=store->end(); current++) {
+            if (*current) {
+                delete *current;
+            }
+            i++;
+        }
+
+        //locked = false;
+        store->clear();
+    };
 
   protected:
-    //G4VoxelDataStore() : instance(0), locked(0) {
-    G4VoxelDataStore();
+    G4VoxelDataStore()
+    {
+        std::vector<T>::reserve(10);    
+    };
 
   private:
-    static G4VoxelDataStore* instance;
-    static G4bool locked;
+    static G4VoxelDataStore<T>* instance;
+    static bool locked;
 };
+
+template <typename T> G4VoxelDataStore<T>* G4VoxelDataStore<T>::instance = 0;
+template <typename T> bool G4VoxelDataStore<T>::locked = 0;
 
 #endif // G4VOXELDATASTORE_H
 

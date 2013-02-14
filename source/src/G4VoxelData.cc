@@ -28,7 +28,6 @@
 
 // G4VOXELDATA //
 #include "G4VoxelData.hh"
-#include "G4VoxelDataStore.hh"
 
 
 G4VoxelData::G4VoxelData(std::vector<char>* array,
@@ -45,7 +44,7 @@ G4VoxelData::G4VoxelData(std::vector<char>* array,
 
     // Register the current instance in the store for
     // automatic garbage collection.
-    G4VoxelDataStore::GetInstance()->Register(this);
+    G4VoxelDataStore<G4VoxelData*>::GetInstance()->Register(this);
 }
 
 G4VoxelData::~G4VoxelData() {
