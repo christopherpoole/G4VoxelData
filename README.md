@@ -8,7 +8,7 @@ Dependencies
 
 Compiling/Running the Example
 -----------------------------
-First edit the detector construction, with the `dir` variable naming a directory with some DICOM CT files in it; this is currently hardcoded and will segfault without it.
+Make sure you have some DICOM CT data in a directory:
 
     cd example/
     mkdir build
@@ -16,6 +16,6 @@ First edit the detector construction, with the `dir` variable naming a directory
     cmake ..
     make
     cd ..
-    ./build/VoxelDataExample
+    ./build/VoxelDataExample /path/to/dicom_ct/
 
 BeamOn is called from `macro/vis.mac`, when running, you will get some output from the sensitive detector printing the name of the current material. Note that the material ramp in this example is arbitrary and not suitable for use in anything read (yet).
