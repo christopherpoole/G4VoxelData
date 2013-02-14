@@ -50,7 +50,7 @@
 #include "G4VoxelDataParameterisation.hh"
 
 
-DetectorConstruction::DetectorConstruction()
+DetectorConstruction::DetectorConstruction(G4String dir)
 {
     // Setpoints we will interpolate between for
     // our materials ramp.
@@ -60,6 +60,7 @@ DetectorConstruction::DetectorConstruction()
     hounsfield.push_back(Hounsfield(125,"G4_TISSUE_SOFT_ICRP", 1.101));
     hounsfield.push_back(Hounsfield(2500,"G4_BONE_CORTICAL_ICRP", 2.088));
 
+    this->dir = dir;
 }
 
 
@@ -79,7 +80,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     world_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
     DicomDataIO* reader = new DicomDataIO(); 
-    G4String dir = "dicom directory";
     G4VoxelData* data = reader->ReadDirectory(dir);
 
     // We can peek at the data type with data->type, however at some point

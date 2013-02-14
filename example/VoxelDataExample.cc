@@ -42,11 +42,11 @@
 
 
 //int main(int argc,char** argv)
-int main(int, char**)
+int main(int, char** argv)
 {
     G4RunManager* run_manager = new G4RunManager;
 
-    G4VUserDetectorConstruction* detector_construction = new DetectorConstruction;
+    G4VUserDetectorConstruction* detector_construction = new DetectorConstruction(argv[1]);
     run_manager->SetUserInitialization(detector_construction);
 
     G4VUserPhysicsList* physics_list = new PhysicsList;
@@ -66,12 +66,10 @@ int main(int, char**)
 
     G4UImanager* UI = G4UImanager::GetUIpointer();
 
-
-
-        G4UIsession* session = new G4UIterminal(new G4UItcsh);
-        UI->ApplyCommand("/control/execute macros/vis.mac");
-        session->SessionStart();
-        delete session;
+    G4UIsession* session = new G4UIterminal(new G4UItcsh);
+    UI->ApplyCommand("/control/execute macros/vis.mac");
+    session->SessionStart();
+    delete session;
 
     delete vis_manager;
 

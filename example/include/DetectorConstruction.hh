@@ -67,7 +67,7 @@ class Hounsfield{
 class DetectorConstruction : public G4VUserDetectorConstruction
 {
   public:
-    DetectorConstruction();
+    DetectorConstruction(G4String dir);
     ~DetectorConstruction();
 
     G4VPhysicalVolume* Construct();
@@ -87,6 +87,9 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     
     // Materials map setpoints
     std::vector<Hounsfield> hounsfield;
+
+    // Directory of DICOM CT to load
+    G4String dir;
 };
 #endif
 
