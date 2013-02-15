@@ -16,7 +16,7 @@ project(GEANT4_VOXELDATA)
 find_package(Geant4 REQUIRED ui_all vis_all)
 include(${Geant4_USE_FILE})
 include_directories(${PROJECT_SOURCE_DIR}/include)
-include_directories(${PROJECT_SOURCE_DIR}/../include)
+include_directories(${PROJECT_SOURCE_DIR}/../../include)
 
 # GDCM
 find_package(GDCM REQUIRED)
@@ -24,12 +24,12 @@ include(${GDCM_USE_FILE})
 
 # User code
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/../include)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/../../include)
 
-add_executable(VoxelDataExample VoxelDataExample.cc ${sources} ${headers})
+add_executable(DicomExample DicomExample.cc ${sources} ${headers})
 
-target_link_libraries(VoxelDataExample ${Geant4_LIBRARIES})
+target_link_libraries(DicomExample ${Geant4_LIBRARIES})
 
-target_link_libraries(VoxelDataExample ${GDCM_LIBRARIES})
-target_link_libraries(VoxelDataExample gdcmMSFF)
+target_link_libraries(DicomExample ${GDCM_LIBRARIES})
+target_link_libraries(DicomExample gdcmMSFF)
 
