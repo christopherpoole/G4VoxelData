@@ -95,8 +95,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4VoxelDataParameterisation<int16_t>* voxeldata_param =
         new G4VoxelDataParameterisation<int16_t>(array, materials, world_physical );
     voxeldata_param->Construct(G4ThreeVector(), new G4RotationMatrix());
-//    new G4PVParameterised("PatientVoxelPhys", voxel_logical, voxeldata_placement->x_logical,
-//                          kUndefined, data->shape[2], voxeldata_param);
+    voxeldata_param->SetRounding(25, -1000, 2000);
 
     SensitiveDetector* detector = new SensitiveDetector("target_detector");
 

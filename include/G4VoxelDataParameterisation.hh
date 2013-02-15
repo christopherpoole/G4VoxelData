@@ -68,7 +68,9 @@ public:
 
         this->voxel_size = array->GetVoxelSize();
         this->volume_shape = array->GetVolumeShape();
-    
+   
+        this->round_values = false; 
+        this->trim_values = false; 
     };
 
     virtual ~G4VoxelDataParameterisation(){};
@@ -148,8 +150,16 @@ public:
 
     G4Material* GetMaterial(G4int i) const
     {
-        T hu = array->GetRoundedValue(i, -1000, 2000, 25);
-        return materials_map.at(hu);
+        T value;
+        if (round_values && trim_values) {
+            value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
+        } else if (round_values && !trim_values) {
+            value = array->GetRoundedValue(i, rounder); 
+        } else {
+            value = array->GetValue(i);
+        }
+
+        return materials_map.at(value);
     };
 
     unsigned int GetMaterialIndex( unsigned int copyNo) const
@@ -183,6 +193,21 @@ public:
     
     };
 
+    void SetRounding(T rounder) {
+        round_values = true;
+
+        this->rounder = rounder;
+    }
+
+    void SetRounding(T rounder, T lower_bound, T upper_bound) {
+        round_values = true;
+        trim_values = true;
+
+        this->rounder = rounder;
+        this->lower_bound = lower_bound;
+        this->upper_bound = upper_bound;
+    }
+
   private:
     G4ThreeVector voxel_size;
     G4ThreeVector volume_shape;
@@ -203,6 +228,13 @@ public:
     G4LogicalVolume* y_logical;
 
     G4bool visibility;
+  
+    // For reading array as rounded to some increment 
+    G4bool round_values;
+    G4bool trim_values;
+    T lower_bound;
+    T upper_bound;
+    T rounder;
 };
 
 #endif // G4VOXELDATAPARAMETERISATION_HH
