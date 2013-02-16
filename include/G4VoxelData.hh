@@ -49,7 +49,8 @@ typedef enum {
     UINT64,
     INT64,
     FLOAT32,
-    FLOAT64
+    FLOAT64,
+    UNKNOWN
 } DataType;
 
 
