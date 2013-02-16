@@ -58,9 +58,9 @@ class G4VoxelData {
     G4VoxelData(std::vector<char>* array,
                 unsigned int length,
                 unsigned int ndims,
-                unsigned int* shape,
-                double* spacing,
-                double* origin,
+                std::vector<unsigned int> shape,
+                std::vector<double> spacing,
+                std::vector<double> origin,
                 DataType type) {
         this->array = array;
         this->length = length;
@@ -83,9 +83,9 @@ class G4VoxelData {
     std::vector<char>* array;
     unsigned int length;
     unsigned int ndims;
-    unsigned int* shape;
-    double* spacing;
-    double* origin;
+    std::vector<unsigned int> shape;
+    std::vector<double> spacing;
+    std::vector<double> origin;
     DataType type;
 };
 

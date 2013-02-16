@@ -78,7 +78,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     world_logical = new G4LogicalVolume(world_solid, air, "world_logical", 0, 0, 0);
     world_physical = new G4PVPlacement(0, G4ThreeVector(), world_logical, "world_physical", 0, false, 0);
     world_logical->SetVisAttributes(G4VisAttributes::Invisible);
-
+    
     DicomDataIO* reader = new DicomDataIO(); 
     G4VoxelData* data = reader->ReadDirectory(dir);
 

@@ -114,9 +114,10 @@ class DicomDataIO : public G4VoxelDataIO {
 
         unsigned int ndims = (unsigned int) image->GetNumberOfDimensions();
         unsigned int buffer_length = (unsigned int) image->GetBufferLength();
-        unsigned int* shape = (unsigned int*) image->GetDimensions();
-        double* spacing = (double*) image->GetSpacing();
-        double* origin = (double*) image->GetOrigin();
+
+        std::vector<unsigned int> shape(image->GetDimensions(), image->GetDimensions() + sizeof(unsigned int)*ndims);
+        std::vector<double> spacing(image->GetSpacing(), image->GetSpacing() + sizeof(double) + ndims) ;
+        std::vector<double> origin(image->GetOrigin(), image->GetOrigin() + sizeof(double) + ndims);
 
         gdcm::PixelFormat pixel_format = image->GetPixelFormat();
 

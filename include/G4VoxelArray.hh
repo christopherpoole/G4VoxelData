@@ -46,7 +46,7 @@ class G4VoxelArray {
         this->length = data->length / sizeof(T);
         this->ndims = data->ndims;
         this->shape = data->shape;
-        this->spacing = (double*) data->spacing;
+        this->spacing = data->spacing;
 
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
     };
@@ -96,8 +96,8 @@ class G4VoxelArray {
   public:
     unsigned int length;
     unsigned int ndims;
-    unsigned int* shape;
-    double* spacing;
+    std::vector<unsigned int> shape;
+    std::vector<double> spacing;
     std::vector<T>* array;
 };
 
