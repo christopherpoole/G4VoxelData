@@ -43,7 +43,7 @@ template <typename T>
 class G4VoxelArray {
   public:
     G4VoxelArray(G4VoxelData* data) {
-        this->length = data->length / sizeof(T);
+        this->length = data->length;
         this->ndims = data->ndims;
         this->shape = data->shape;
         this->spacing = data->spacing;
