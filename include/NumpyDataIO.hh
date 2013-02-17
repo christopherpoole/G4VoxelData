@@ -59,13 +59,10 @@ class NumpyDataIO : public G4VoxelDataIO {
         std::fill(spacing.begin(), spacing.end(), 1);
         std::vector<double> origin(ndims);
         std::fill(origin.begin(), origin.end(), 0);
-       
-        G4cout << size << G4endl;
 
         std::vector<char>* buffer = new std::vector<char>(array.data, array.data + size);
         
-        //return new G4VoxelData(buffer, buffer->size(), array.shape.size(), shape, spacing, origin, INT16);
-        return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, true);
+        return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN);
     };
 };
 
