@@ -1,3 +1,7 @@
 *.bak
 *.swp
 *.dcm
+
+examples/dicom/build/
+examples/numpy/build/
+
