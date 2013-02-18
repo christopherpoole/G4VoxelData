@@ -73,7 +73,8 @@ public:
         this->trim_values = false; 
     };
 
-    virtual ~G4VoxelDataParameterisation(){};
+    virtual ~G4VoxelDataParameterisation(){
+    };
 
     virtual void Construct(G4ThreeVector position, G4RotationMatrix* rotation) {
         G4NistManager* nist_manager = G4NistManager::Instance();
@@ -88,7 +89,8 @@ public:
             new G4LogicalVolume(voxeldata_solid, air, "voxeldata_logical", 0, 0, 0);
         new G4PVPlacement(rotation, position,
             "voxeldata_container", voxeldata_logical, mother_physical, 0, false, 0);
-        voxeldata_logical->SetVisAttributes(G4VisAttributes::Invisible);
+//        if (!this->visibility)
+            voxeldata_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // Y //
         G4VSolid* y_solid =
@@ -98,7 +100,8 @@ public:
         y_logical = new G4LogicalVolume(y_solid, air, "y_logical");
         new G4PVReplica("y_replica", y_logical, voxeldata_logical,
                         kYAxis, array->shape[1], array->spacing[1]);
-        y_logical->SetVisAttributes(G4VisAttributes::Invisible);
+//        if (!this->visibility)
+            y_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // X //
         G4VSolid* x_solid =
@@ -108,7 +111,8 @@ public:
         x_logical = new G4LogicalVolume(x_solid, air, "x_logical");
         new G4PVReplica("x_replica", x_logical, y_logical, kXAxis, array->shape[0],
                         array->spacing[0]);
-        x_logical->SetVisAttributes(G4VisAttributes::Invisible);
+//        if (!this->visibility)
+            x_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // VOXEL //
         G4VSolid* voxel_solid =
@@ -116,7 +120,8 @@ public:
                                      array->spacing[1]/2.,
                                      array->spacing[2]/2.);
         voxel_logical = new G4LogicalVolume(voxel_solid, air, "voxel_logical");
-        voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
+        if (!this->visibility)
+            voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
         
         new G4PVParameterised("voxel_data", voxel_logical, x_logical, kUndefined, array->shape[2], this);
     };
@@ -134,9 +139,11 @@ public:
         int index = x + (volume_shape.x() * y) + (volume_shape.x() * volume_shape.y() * z);
         G4Material* VoxelMaterial = GetMaterial(index);
         
-        //double gray = (array->GetRoundedValue(index, -1000, 2500, 25) + 2500) / 4000.;
-        //physical_volume->GetLogicalVolume()->SetVisAttributes(G4Colour(gray, 0, gray, 1));
-        
+        if (this->visibility) {
+            physical_volume->GetLogicalVolume()->SetVisAttributes(colour_map[index]);
+            G4cout << colour_map[index];
+        }
+
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
         return VoxelMaterial;
@@ -189,8 +196,13 @@ public:
         return voxel_logical;
     };
 
-    void SetVisibility(G4bool visible) {
-    
+    void SetVisibility(G4bool visibility) {
+        this->visibility = visibility;
+    };
+
+    void SetColourMap(std::map<U, G4Colour> colour_map) {
+        SetVisibility(true);
+        this->colour_map = colour_map;
     };
 
     void SetRounding(T rounder) {
@@ -228,6 +240,7 @@ public:
     G4LogicalVolume* y_logical;
 
     G4bool visibility;
+    std::map<U, G4Colour> colour_map;
   
     // For reading array as rounded to some increment 
     G4bool round_values;
