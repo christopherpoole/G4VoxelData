@@ -104,6 +104,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     std::vector<T>* array;
 };
 
+
 template <typename T>
 class G4VoxelArray<std::complex<T> > : public G4VoxelArrayBase<T> {
   public:

@@ -83,8 +83,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     for (int i=0; i<array->length; i++)
         G4cout << (int) array->GetValue(i) << " ";
-
-/*    
+/*
     std::map<uint8_t, G4Material*> materials;
     for (int i=0; i<256; i++) {
         materials[i] = air;
