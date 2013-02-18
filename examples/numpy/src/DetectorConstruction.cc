@@ -81,10 +81,13 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     array->shape.push_back(1);
     array->ndims += 1;
 
+    // Presently we can only map agains the real part of complex numpyers
     std::map<uint8_t, G4Material*> materials;
     for (int i=0; i<256; i++) {
         materials[i] = air;
     }
+    
+    // The first template param is for the Array, second is for the map.
     G4VoxelDataParameterisation<std::complex<uint8_t>, uint8_t>* voxeldata_param =
         new G4VoxelDataParameterisation<std::complex<uint8_t>, uint8_t>(array, materials,
                                                                 world_physical);
