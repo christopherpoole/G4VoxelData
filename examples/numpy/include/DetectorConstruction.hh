@@ -53,10 +53,6 @@ class DetectorConstruction : public G4VUserDetectorConstruction
 
     G4VPhysicalVolume* Construct();
 
-    std::map<int16_t, G4Material*> MakeMaterialsMap(G4int increment);
-    G4Material* MakeNewMaterial(G4String base_material_name, G4double density);
-
-
   private:
     G4Box* world_solid;
     G4LogicalVolume* world_logical;

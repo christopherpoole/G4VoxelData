@@ -53,13 +53,13 @@
 #include "G4VisAttributes.hh"
 
 
-template <typename T>
+template <typename T, typename U=T>
 class G4VoxelDataParameterisation : public G4VNestedParameterisation
 {
 public:
 
     G4VoxelDataParameterisation(G4VoxelArray<T>* array,
-        std::map<T, G4Material*> materials_map, G4VPhysicalVolume* mother_physical)
+        std::map<U, G4Material*> materials_map, G4VPhysicalVolume* mother_physical)
     {
         this->array = array;
 
@@ -150,14 +150,14 @@ public:
 
     G4Material* GetMaterial(G4int i) const
     {
-        T value;
-        if (round_values && trim_values) {
-            value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
-        } else if (round_values && !trim_values) {
-            value = array->GetRoundedValue(i, rounder); 
-        } else {
+        U value;
+        //if (round_values && trim_values) {
+        //    value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
+        //} else if (round_values && !trim_values) {
+        //    value = array->GetRoundedValue(i, rounder); 
+        //} else {
             value = array->GetValue(i);
-        }
+        //}
 
         return materials_map.at(value);
     };
@@ -215,7 +215,7 @@ public:
     std::vector<G4Material*> fMaterials;//array of pointers to materials
     size_t* fMaterialIndices; // Index in materials corresponding to each voxel
 
-    std::map<T, G4Material*> materials_map;
+    std::map<U, G4Material*> materials_map;
     G4VoxelData* voxel_data;
     G4VoxelArray<T>* array;
     G4bool with_map;

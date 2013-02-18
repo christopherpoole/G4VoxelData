@@ -81,17 +81,15 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     array->shape.push_back(1);
     array->ndims += 1;
 
-    for (int i=0; i<array->length; i++)
-        G4cout << (int) array->GetValue(i) << " ";
-/*
     std::map<uint8_t, G4Material*> materials;
     for (int i=0; i<256; i++) {
         materials[i] = air;
     }
-    G4VoxelDataParameterisation<uint8_t>* voxeldata_param =
-        new G4VoxelDataParameterisation<uint8_t>(array, materials, world_physical);
+    G4VoxelDataParameterisation<std::complex<uint8_t>, uint8_t>* voxeldata_param =
+        new G4VoxelDataParameterisation<std::complex<uint8_t>, uint8_t>(array, materials,
+                                                                world_physical);
     voxeldata_param->Construct(G4ThreeVector(), new G4RotationMatrix());
-*/
+
     return world_physical;
 }
 
