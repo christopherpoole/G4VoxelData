@@ -151,13 +151,13 @@ public:
     G4Material* GetMaterial(G4int i) const
     {
         U value;
-        //if (round_values && trim_values) {
-        //    value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
-        //} else if (round_values && !trim_values) {
-        //    value = array->GetRoundedValue(i, rounder); 
-        //} else {
+        if (round_values && trim_values) {
+            value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
+        } else if (round_values && !trim_values) {
+            value = array->GetRoundedValue(i, rounder); 
+        } else {
             value = array->GetValue(i);
-        //}
+        }
 
         return materials_map.at(value);
     };
