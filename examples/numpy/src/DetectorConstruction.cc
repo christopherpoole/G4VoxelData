@@ -75,16 +75,16 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     NumpyDataIO* reader = new NumpyDataIO(); 
     G4VoxelData* data = reader->Read(filename);
 
-    G4VoxelArray<uint8_t>* array = new G4VoxelArray<uint8_t>(data);
+    G4VoxelArray<std::complex<uint8_t> >* array =
+        new G4VoxelArray<std::complex<uint8_t> >(data);
     array->spacing.push_back(1);
     array->shape.push_back(1);
     array->ndims += 1;
 
-    G4cout << array->length << " "
-        << array->spacing[0] << " " << array->spacing[1] << " " << array->spacing[2] << " "
-        << array->shape[0] << " " << array->shape[1] << " " << array->shape[2] << G4endl;
+    for (int i=0; i<array->length; i++)
+        G4cout << (int) array->GetValue(i) << " ";
 
-    /*
+/*    
     std::map<uint8_t, G4Material*> materials;
     for (int i=0; i<256; i++) {
         materials[i] = air;

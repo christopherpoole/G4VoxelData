@@ -40,7 +40,27 @@
 
 
 template <typename T>
-class G4VoxelArray {
+class G4VoxelArrayBase {
+  public:
+    G4ThreeVector GetVoxelSize() {
+        return G4ThreeVector(spacing[0]/2., spacing[1]/2., spacing[2]/2.);
+    };
+
+    G4ThreeVector GetVolumeShape() {
+        return G4ThreeVector(shape[0], shape[1], shape[2]);
+    };
+
+  public:
+    unsigned int length;
+    unsigned int ndims;
+
+    std::vector<unsigned int> shape;
+    std::vector<double> spacing;
+};
+
+
+template <typename T>
+class G4VoxelArray : public G4VoxelArrayBase<T> {
   public:
     G4VoxelArray(G4VoxelData* data) {
         this->length = data->length;
@@ -53,7 +73,7 @@ class G4VoxelArray {
 
     ~G4VoxelArray() {};
 
-    T GetValue(unsigned int x) {
+    virtual T GetValue(unsigned int x) {
         return (*array)[x]; 
     };
 
@@ -80,26 +100,32 @@ class G4VoxelArray {
         return val; 
     };
 
-    T GetValue(unsigned int x, unsigned int y) {
-        unsigned int index = shape[1] * y + x;
-        return array[index];
+  public:
+    std::vector<T>* array;
+};
+
+template <typename T>
+class G4VoxelArray<std::complex<T> > : public G4VoxelArrayBase<T> {
+  public:
+    G4VoxelArray(G4VoxelData* data) {
+        this->length = data->length;
+        this->ndims = data->ndims;
+        this->shape = data->shape;
+        this->spacing = data->spacing;
+
+        this->array = reinterpret_cast<std::vector<std::complex<T> >*>(data->array);
     };
 
-    G4ThreeVector GetVoxelSize() {
-        return G4ThreeVector(spacing[0]/2., spacing[1]/2., spacing[2]/2.);
-    };
+    ~G4VoxelArray() {};
 
-    G4ThreeVector GetVolumeShape() {
-        return G4ThreeVector(shape[0], shape[1], shape[2]);
+    T GetValue(unsigned int x) {
+        return ((*array)[x]).real(); 
     };
 
   public:
-    unsigned int length;
-    unsigned int ndims;
-    std::vector<unsigned int> shape;
-    std::vector<double> spacing;
-    std::vector<T>* array;
+    std::vector<std::complex<T> >* array;
 };
+
 
 #endif // G4VOXELARRAY_H
 
