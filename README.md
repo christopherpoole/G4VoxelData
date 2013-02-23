@@ -3,6 +3,8 @@ Presently there is not an easy and generic way of loading voxelised datasets int
 G4VoxelData aims to provide a consistent interface to various voxel data libraries (GDCM for DICOM for example) and load this data as nested parameterised volumes.
 The library is headers only so no compilation or installation step is required by the user.
 
+![Screen Shot](https://raw.github.com/christopherpoole/G4VoxelData/master/screenshot.png)
+
 ## Dependencies
 * [GEANT4](http://www.geant4.org/) (only tested with 4.9.6 to date)
 * [GDCM 2.2.1](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) (for DICOM, reading only)
