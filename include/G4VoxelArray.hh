@@ -53,7 +53,7 @@ class G4VoxelArrayBase {
   public:
     unsigned int length;
     unsigned int ndims;
-
+    
     std::vector<unsigned int> shape;
     std::vector<double> spacing;
 };
@@ -67,6 +67,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         this->ndims = data->ndims;
         this->shape = data->shape;
         this->spacing = data->spacing;
+        this->order = data->order;
 
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
     };
@@ -102,6 +103,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
 
   public:
     std::vector<T>* array;
+    Order order;
 };
 
 

@@ -53,6 +53,10 @@ typedef enum {
     UNKNOWN
 } DataType;
 
+typedef enum {
+    ROW_MAJOR,
+    COLUMN_MAJOR
+} Order;
 
 class G4VoxelData {
   public:
@@ -62,7 +66,7 @@ class G4VoxelData {
                 std::vector<unsigned int> shape,
                 std::vector<double> spacing,
                 std::vector<double> origin,
-                DataType type) {
+                DataType type, Order order=ROW_MAJOR) {
         this->array = array;
         this->length = length;
         this->ndims = ndims;
@@ -70,6 +74,7 @@ class G4VoxelData {
         this->spacing = spacing;
         this->origin = origin;
         this->type = type;
+        this->order = order;
 
         // Register the current instance in the store for
         // automatic garbage collection.
@@ -88,6 +93,7 @@ class G4VoxelData {
     std::vector<double> spacing;
     std::vector<double> origin;
     DataType type;
+    Order order;
 };
 
 #endif // G4VOXELDATA_H
