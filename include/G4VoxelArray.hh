@@ -74,6 +74,17 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
 
     ~G4VoxelArray() {};
 
+    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z) {
+        unsigned int index;
+
+        if (this->order == ROW_MAJOR) {
+            index = x + (this->shape[0] * x) + (this->shape[0] * this->shape[1] * z); 
+        } else if (this->order == COLUMN_MAJOR) {
+            index = z + (this->shape[2] * y) + (this->shape[2] * this->shape[1] * x); 
+        }
+        return index;
+    };
+
     virtual T GetValue(unsigned int x) {
         return (*array)[x]; 
     };
