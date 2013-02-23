@@ -85,7 +85,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     std::map<uint8_t, G4Material*> materials;
     std::map<uint8_t, G4Colour> colours;
     for (int i=0; i<256; i++) {
-        materials[i] = air;
+        materials[i] = water;
 
         double gray = (double) i / 255.;
         colours[i] = G4Colour(gray, gray, gray, 1);
@@ -96,7 +96,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         new G4VoxelDataParameterisation<uint8_t>(array, materials,
                                                                 world_physical);
     voxeldata_param->SetColourMap(colours);
-    voxeldata_param->Construct(G4ThreeVector(), new G4RotationMatrix());
+
+    G4RotationMatrix* rot = new G4RotationMatrix;
+    rot->rotateZ(90*deg);
+    voxeldata_param->Construct(G4ThreeVector(), rot);
     
     return world_physical;
 }

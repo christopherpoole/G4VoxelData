@@ -44,12 +44,12 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     particle_gun = new G4ParticleGun();
 
     G4ParticleTable* particle_table = G4ParticleTable::GetParticleTable();
-    G4ParticleDefinition* particle = particle_table->FindParticle("gamma");
+    G4ParticleDefinition* particle = particle_table->FindParticle("e-");
   
     particle_gun->SetParticleDefinition(particle);
-    particle_gun->SetParticlePosition(G4ThreeVector(0, 0, 1*m));
-    particle_gun->SetParticleEnergy(6.*MeV);
-    particle_gun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
+    particle_gun->SetParticlePosition(G4ThreeVector(0, -12*mm, 0*m));
+    particle_gun->SetParticleEnergy(1.*MeV);
+    particle_gun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
 
     detector_construction = (DetectorConstruction*) (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
 }

@@ -136,7 +136,7 @@ public:
 
         if (z < 0) z = 0;
 
-        int index = x + (volume_shape.x() * y) + (volume_shape.x() * volume_shape.y() * z);
+        int index = array->GetIndex(x, y, z); 
         G4Material* VoxelMaterial = GetMaterial(index);
         
         if (this->visibility) {
@@ -186,9 +186,9 @@ public:
     using G4VNestedParameterisation::ComputeDimensions;
     void ComputeDimensions(G4Box& box, const G4int, const G4VPhysicalVolume *) const
     {
-        box.SetXHalfLength(voxel_size.x()/2.);
-        box.SetYHalfLength(voxel_size.y()/2.);
-        box.SetZHalfLength(voxel_size.z()/2.);
+        box.SetXHalfLength(voxel_size.x());
+        box.SetYHalfLength(voxel_size.y());
+        box.SetZHalfLength(voxel_size.z());
     };
 
     G4LogicalVolume* GetLogicalVolume() {

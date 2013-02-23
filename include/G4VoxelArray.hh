@@ -50,10 +50,24 @@ class G4VoxelArrayBase {
         return G4ThreeVector(shape[0], shape[1], shape[2]);
     };
 
+    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z) {
+        unsigned int index;
+        
+        if (this->order == ROW_MAJOR) {
+            index = x + (this->shape[0] * y) + (this->shape[0] * this->shape[1] * z); 
+        } else if (this->order == COLUMN_MAJOR) {
+            index = z + (this->shape[2] * y) + (this->shape[2] * this->shape[1] * x); 
+        }
+        return index;
+    };
+
+
   public:
     unsigned int length;
     unsigned int ndims;
     
+    Order order;
+
     std::vector<unsigned int> shape;
     std::vector<double> spacing;
 };
@@ -73,17 +87,6 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     };
 
     ~G4VoxelArray() {};
-
-    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z) {
-        unsigned int index;
-
-        if (this->order == ROW_MAJOR) {
-            index = x + (this->shape[0] * x) + (this->shape[0] * this->shape[1] * z); 
-        } else if (this->order == COLUMN_MAJOR) {
-            index = z + (this->shape[2] * y) + (this->shape[2] * this->shape[1] * x); 
-        }
-        return index;
-    };
 
     virtual T GetValue(unsigned int x) {
         return (*array)[x]; 
@@ -114,7 +117,6 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
 
   public:
     std::vector<T>* array;
-    Order order;
 };
 
 
@@ -126,7 +128,8 @@ class G4VoxelArray<std::complex<T> > : public G4VoxelArrayBase<T> {
         this->ndims = data->ndims;
         this->shape = data->shape;
         this->spacing = data->spacing;
-
+        this->order = data->order;
+        
         this->array = reinterpret_cast<std::vector<std::complex<T> >*>(data->array);
     };
 
