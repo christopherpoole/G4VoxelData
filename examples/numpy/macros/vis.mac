@@ -1,8 +1,8 @@
 /vis/verbose 0
-/vis/open OGLIX 800x800-0+50
+/vis/open OGLSX 600x600-0+50
 /vis/drawVolume
 
-/vis/viewer/set/viewpointThetaPhi 60 30
+/vis/viewer/set/viewpointThetaPhi 30 30
 #/vis/viewer/set/style solid
 #/vis/viewer/set/hiddenEdge 1
 
