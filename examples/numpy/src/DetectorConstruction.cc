@@ -75,8 +75,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     NumpyDataIO* reader = new NumpyDataIO(); 
     G4VoxelData* data = reader->Read(filename);
 
-    G4VoxelArray<std::complex<uint8_t> >* array =
-        new G4VoxelArray<std::complex<uint8_t> >(data);
+    G4VoxelArray<uint8_t>* array =
+        new G4VoxelArray<uint8_t>(data);
     array->spacing.push_back(1);
     array->shape.push_back(1);
     array->ndims += 1;
@@ -88,15 +88,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         materials[i] = air;
 
         double gray = (double) i / 255.;
-        G4cout << gray << " ";
         colours[i] = G4Colour(gray, gray, gray, 1);
     }
     
     // The first template param is for the Array, second is for the map.
-    G4VoxelDataParameterisation<std::complex<uint8_t>, uint8_t>* voxeldata_param =
-        new G4VoxelDataParameterisation<std::complex<uint8_t>, uint8_t>(array, materials,
+    G4VoxelDataParameterisation<uint8_t>* voxeldata_param =
+        new G4VoxelDataParameterisation<uint8_t>(array, materials,
                                                                 world_physical);
-    //voxeldata_param->SetColourMap(colours);
+    voxeldata_param->SetColourMap(colours);
     voxeldata_param->Construct(G4ThreeVector(), new G4RotationMatrix());
     
     return world_physical;

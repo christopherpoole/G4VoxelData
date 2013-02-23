@@ -120,8 +120,8 @@ public:
                                      array->spacing[1]/2.,
                                      array->spacing[2]/2.);
         voxel_logical = new G4LogicalVolume(voxel_solid, air, "voxel_logical");
-        if (!this->visibility)
-            voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
+//        if (!this->visibility)
+//            voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
         
         new G4PVParameterised("voxel_data", voxel_logical, x_logical, kUndefined, array->shape[2], this);
     };
@@ -140,8 +140,7 @@ public:
         G4Material* VoxelMaterial = GetMaterial(index);
         
         if (this->visibility) {
-            physical_volume->GetLogicalVolume()->SetVisAttributes(colour_map[index]);
-            G4cout << colour_map[index];
+            physical_volume->GetLogicalVolume()->SetVisAttributes(colour_map[array->GetValue(index)]);
         }
 
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
