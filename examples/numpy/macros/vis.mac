@@ -3,7 +3,7 @@
 /vis/drawVolume
 
 /vis/viewer/set/viewpointThetaPhi 30 30
-#/vis/viewer/set/style solid
+/vis/viewer/set/style solid
 #/vis/viewer/set/hiddenEdge 1
 
 /vis/scene/add/trajectories
