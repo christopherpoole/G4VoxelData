@@ -177,7 +177,7 @@ public:
     {
         G4double x = 0;
         G4double y = 0;
-        G4double z = (2*copyNo+1)*voxel_size.x()/2. - voxel_size.z()*volume_shape.z()/2.;
+        G4double z = (2*copyNo+1)*voxel_size.x() - voxel_size.z()*volume_shape.z();
 
         G4ThreeVector position(x, y, z);
         physVol->SetTranslation(position);
