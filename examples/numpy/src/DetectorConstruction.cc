@@ -77,9 +77,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     G4VoxelArray<uint8_t>* array =
         new G4VoxelArray<uint8_t>(data);
-    array->spacing.push_back(1);
-    array->shape.push_back(1);
-    array->ndims += 1;
+
+    if (data->ndims == 2) {
+        array->spacing.push_back(1);
+        array->shape.push_back(1);
+        array->ndims += 1;
+    }
 
     // Presently we can only map agains the real part of complex numpyers
     std::map<uint8_t, G4Material*> materials;
