@@ -90,7 +90,7 @@ public:
         new G4PVPlacement(rotation, position,
             "voxeldata_container", voxeldata_logical, mother_physical, 0, false, 0);
 //        if (!this->visibility)
-            voxeldata_logical->SetVisAttributes(G4VisAttributes::Invisible);
+//            voxeldata_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // Y //
         G4VSolid* y_solid =
@@ -177,7 +177,7 @@ public:
     {
         G4double x = 0;
         G4double y = 0;
-        G4double z = (2*copyNo+1)*voxel_size.x() - voxel_size.z()*volume_shape.z();
+        G4double z = 2*copyNo*voxel_size.z() - array->shape[2]*voxel_size.z() + voxel_size.z();
 
         G4ThreeVector position(x, y, z);
         physVol->SetTranslation(position);
