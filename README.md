@@ -11,11 +11,11 @@ The library is headers only so no compilation or installation step is required b
 * [CNPY](https://github.com/rogersce/cnpy) (for NUMPY, reading only)
 
 ## Usage (User)
-The fundamental type is `G4VoxelData` which is basically a container holding a `char*` of data long with some metadata including the actual type of the data (uint16 for example), the total length, shape and voxel spacing.
+The fundamental type is `G4VoxelData` which is basically a container holding a `char*` of data along with some metadata including the actual type of the data (uint16 for example), the total length, shape and voxel spacing.
 We populate `G4VoxelData` using an IO inheriting from `G4VoxelDataIO` which will provided a reader and/or writer for the target voxel data format; `DicomDataIO` will reader DICOM CT data using GDCM.
 
 Given the inferred or known type of the data, voxelwise access (rather than bytewise for a `char*`) is available with `G4VoxelArray<sometype>(g4voxeldata)`.
-Here we can access a value in the voxel data with `G4VoxelArray::GetValue(index)` for the raw value of type `sometype`, or we can use `G4VoxelArray::GetRoundedValue(index, `n`)` to access the raw value rounded to the nearest `n`; this is useful if our materials mapping between the values in the array at `G4Materials` is only defined in increments of `n`.
+Here we can access a value in the voxel data with `G4VoxelArray::GetValue(index)` for the raw value of type `sometype`, or we can use `G4VoxelArray::GetRoundedValue(index, `n`)` to access the raw value rounded to the nearest `n`; this is useful if our materials mapping between the values in the array of `G4Materials` is only defined in increments of `n`.
 For basic usage a `std::map<sometype, G4Material*>` is required and must be created by the user.
 In the example usage we have an array of Hounsfiled units (DICOM CT) which we wish to map to G4Materials of various density.
 
