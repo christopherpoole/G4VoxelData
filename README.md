@@ -10,6 +10,29 @@ The library is headers only so no compilation or installation step is required b
 * [GDCM 2.2.1](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) (for DICOM, reading only)
 * [CNPY](https://github.com/rogersce/cnpy) (for NUMPY, reading only)
 
+## Installation
+G4VoxelData is header only, so installation is fairly optional.
+The included files for cmake serve as configuration is you only desire certain components and/or if you are using cmake for building your user code.
+Most probably you are here for functionality provided for loading DICOM CT data, this is turned on by default (Python numpy arrays as well.
+If you just want to load DICOM, optionally setting the install path:
+
+    $> git clone https://github.com/christopherpoole/G4VoxelData.git
+    $> cd G4VoxelData
+    $> mkdir build
+    $> cd build/
+    $> cmake .. -DWITH_NUMPY="OFF" -DCMAKE_INSTALL_PREFIX:PATH=/usr/local
+    $> sudo make install
+
+This will install the header as well as the cmake-config.
+In your user CMakeList.txt:
+
+    ...
+    find_package(G4VoxelData)
+    ...
+    target_link_libraries(myapp ${G4VOXELDATA_DICOM_LIBRARIES})
+
+Presently components in cmake are not setup properly, but this should work as expected.
+
 ## Usage (User)
 The fundamental type is `G4VoxelData` which is basically a container holding a `char*` of data along with some metadata including the actual type of the data (uint16 for example), the total length, shape and voxel spacing.
 We populate `G4VoxelData` using an IO inheriting from `G4VoxelDataIO` which will provided a reader and/or writer for the target voxel data format; `DicomDataIO` will reader DICOM CT data using GDCM.
