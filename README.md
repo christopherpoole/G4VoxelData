@@ -13,7 +13,7 @@ The library is headers only so no compilation or installation step is required b
 ## Installation
 G4VoxelData is header only, so installation is fairly optional.
 The included files for cmake serve as configuration is you only desire certain components and/or if you are using cmake for building your user code.
-Most probably you are here for functionality provided for loading DICOM CT data, this is turned on by default (Python numpy arrays as well.
+Most probably you are here for functionality provided for loading DICOM CT data, this is turned on by default (Python numpy arrays as well).
 If you just want to load DICOM, optionally setting the install path:
 
     $> git clone https://github.com/christopherpoole/G4VoxelData.git
