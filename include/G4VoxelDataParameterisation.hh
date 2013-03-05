@@ -80,7 +80,6 @@ public:
         G4NistManager* nist_manager = G4NistManager::Instance();
         G4Material* air = nist_manager->FindOrBuildMaterial("G4_AIR");
 
-
         G4Box* voxeldata_solid =
             new G4Box("voxeldata_solid", array->shape[0]*array->spacing[0]/2.,
                                          array->shape[1]*array->spacing[1]/2.,
@@ -100,7 +99,7 @@ public:
         y_logical = new G4LogicalVolume(y_solid, air, "y_logical");
         new G4PVReplica("y_replica", y_logical, voxeldata_logical,
                         kYAxis, array->shape[1], array->spacing[1]);
-//        if (!this->visibility)
+        if (!this->visibility)
             y_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // X //
@@ -111,7 +110,7 @@ public:
         x_logical = new G4LogicalVolume(x_solid, air, "x_logical");
         new G4PVReplica("x_replica", x_logical, y_logical, kXAxis, array->shape[0],
                         array->spacing[0]);
-//        if (!this->visibility)
+        if (!this->visibility)
             x_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // VOXEL //
@@ -120,8 +119,8 @@ public:
                                      array->spacing[1]/2.,
                                      array->spacing[2]/2.);
         voxel_logical = new G4LogicalVolume(voxel_solid, air, "voxel_logical");
-//        if (!this->visibility)
-//            voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
+        if (!this->visibility)
+            voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
         
         new G4PVParameterised("voxel_data", voxel_logical, x_logical, kUndefined, array->shape[2], this);
     };
@@ -139,9 +138,9 @@ public:
         int index = array->GetIndex(x, y, z); 
         G4Material* VoxelMaterial = GetMaterial(index);
         
-        if (this->visibility) {
-            physical_volume->GetLogicalVolume()->SetVisAttributes(colour_map[array->GetValue(index)]);
-        }
+//        if (this->visibility) {
+//            physical_volume->GetLogicalVolume()->SetVisAttributes(colour_map[array->GetValue(index)]);
+//        }
 
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 

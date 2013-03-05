@@ -73,6 +73,7 @@ class DicomDataIO : public G4VoxelDataIO {
 
         // Populate G4VoxelData with stacked slices.
         G4VoxelData* voxel_data = Read(filenames[0].c_str());
+
         double first_position = voxel_data->origin[2];
         double last_position;
 
@@ -111,13 +112,26 @@ class DicomDataIO : public G4VoxelDataIO {
         }
 
         gdcm::Image* image = &reader->GetImage();
-
+        gdcm::DataSet* file = &reader->GetFile().GetDataSet();
+        
         unsigned int ndims = (unsigned int) image->GetNumberOfDimensions();
         unsigned int buffer_length = (unsigned int) image->GetBufferLength();
 
-        std::vector<unsigned int> shape(image->GetDimensions(), image->GetDimensions() + sizeof(unsigned int)*ndims);
-        std::vector<double> spacing(image->GetSpacing(), image->GetSpacing() + sizeof(double) + ndims) ;
-        std::vector<double> origin(image->GetOrigin(), image->GetOrigin() + sizeof(double) + ndims);
+        std::vector<unsigned int> shape(image->GetDimensions(),
+                image->GetDimensions() + sizeof(unsigned int)*ndims);
+        std::vector<double> spacing(image->GetSpacing(),
+                image->GetSpacing() + sizeof(double) + ndims) ;
+
+        // Add slice thickness as z-spacing
+        gdcm::Tag slice_thickness_tag = gdcm::Tag(0x0018, 0x0050);
+        if (file->FindDataElement(slice_thickness_tag)) {
+            std::stringstream strm;
+            file->GetDataElement(slice_thickness_tag).GetValue().Print(strm);
+            strm >> spacing[2];
+        }
+
+        std::vector<double> origin(image->GetOrigin(),
+                image->GetOrigin() + sizeof(double) + ndims);
 
         gdcm::PixelFormat pixel_format = image->GetPixelFormat();
 
