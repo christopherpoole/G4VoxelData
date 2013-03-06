@@ -57,6 +57,9 @@ class DicomDataIO : public G4VoxelDataIO {
         dir.Load((const char*) directory.c_str());
         std::vector<std::string> input_filenames = dir.GetFilenames();
 
+        if (input_filenames.size() == 0)
+            G4cerr << "Specified directory is empty." << G4endl;
+
         // Lookup the modality of all images in the directory, we will choose
         // only those matching `modality` as specified by the user.
         gdcm::Scanner scanner;
@@ -72,12 +75,19 @@ class DicomDataIO : public G4VoxelDataIO {
             scanner.GetAllFilenamesFromTagToValue(modality_tag,
                                                   (const char*) modality.c_str());
 
+        if (filtered_filenames.size() == 0)
+           G4cerr << "No files of modality " << modality << " in directory" << G4endl; 
+
         if (acquisition_number > 0) {
             scanner.Scan(filtered_filenames);
             std::string aq_number = gdcm::to_string(acquisition_number);
             filtered_filenames = 
                 scanner.GetAllFilenamesFromTagToValue(acquisition_tag,
                         (const char*) aq_number.c_str());
+
+            if (filtered_filenames.size() == 0)
+                G4cerr << "No files of acquisition number " << acquisition_number
+                    << " in directory." << G4endl;
         }
 
         // Sort the files along the z-axis for stacking as a 3D array.
@@ -85,6 +95,9 @@ class DicomDataIO : public G4VoxelDataIO {
         sorter.SetComputeZSpacing(false);
         sorter.Sort(filtered_filenames);
         std::vector<std::string> filenames = sorter.GetFilenames();
+
+        if (filenames.size() == 0)
+            G4cerr << "Files could not be sorted, check acquisition number" << G4endl;
 
         // Populate G4VoxelData with stacked slices.
         G4VoxelData* voxel_data = Read(filenames[0].c_str());
