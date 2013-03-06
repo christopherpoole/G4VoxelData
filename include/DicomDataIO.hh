@@ -35,6 +35,7 @@
 
 // STL //
 #include <vector>
+#include <string>
 
 // Grassroots DICOM Library //
 #include "gdcmDirectory.h"
@@ -49,7 +50,8 @@
 
 class DicomDataIO : public G4VoxelDataIO {
   public:
-    G4VoxelData* ReadDirectory(G4String directory, G4String modality="CT")
+    G4VoxelData* ReadDirectory(G4String directory, G4String modality="CT",
+            G4int aquisition_number=1)
     {
         gdcm::Directory dir;
         dir.Load((const char*) directory.c_str());
@@ -58,12 +60,23 @@ class DicomDataIO : public G4VoxelDataIO {
         // Lookup the modality of all images in the directory, we will choose
         // only those matching `modality` as specified by the user.
         gdcm::Scanner scanner;
+
         gdcm::Tag const modality_tag = gdcm::Tag(0x08, 0x60);
         scanner.AddTag(modality_tag);
+
+        gdcm::Tag const aquisition_tag = gdcm::Tag(0x20, 0x12);
+        scanner.AddTag(aquisition_tag);
+
         scanner.Scan(input_filenames);
         std::vector<std::string> filtered_filenames = 
             scanner.GetAllFilenamesFromTagToValue(modality_tag,
                                                   (const char*) modality.c_str());
+
+        scanner.Scan(filtered_filenames);
+        std::string aq_number = gdcm::to_string(aquisition_number);
+        filtered_filenames = 
+            scanner.GetAllFilenamesFromTagToValue(aquisition_tag,
+                    (const char*) aq_number.c_str());
 
         // Sort the files along the z-axis for stacking as a 3D array.
         gdcm::IPPSorter sorter;
