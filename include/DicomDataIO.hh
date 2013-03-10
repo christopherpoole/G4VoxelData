@@ -50,7 +50,7 @@
 
 class DicomDataIO : public G4VoxelDataIO {
   public:
-    G4VoxelData* ReadDirectory(G4String directory, G4String modality="CT",
+    G4VoxelData* ReadDirectory(G4String directory, G4bool sort, G4String modality="CT",
             G4int acquisition_number=-1)
     {
         gdcm::Directory dir;
@@ -89,16 +89,20 @@ class DicomDataIO : public G4VoxelDataIO {
                 G4cerr << "No files of acquisition number " << acquisition_number
                     << " in directory." << G4endl;
         }
-
+        G4cout << sort << G4endl;
         // Sort the files along the z-axis for stacking as a 3D array.
-        gdcm::IPPSorter sorter;
-        sorter.SetComputeZSpacing(false);
-        sorter.Sort(filtered_filenames);
-        std::vector<std::string> filenames = sorter.GetFilenames();
+        std::vector<std::string> filenames;
+        if (sort == true) {
+            gdcm::IPPSorter sorter;
+            sorter.SetComputeZSpacing(false);
+            sorter.Sort(filtered_filenames);
+            filenames = sorter.GetFilenames();
 
-        if (filenames.size() == 0)
-            G4cerr << "Files could not be sorted, check acquisition number" << G4endl;
-
+            if (filenames.size() == 0)
+                G4cerr << "Files could not be sorted, check acquisition number" << G4endl;
+        } else {
+            filenames = filtered_filenames;
+        }
         // Populate G4VoxelData with stacked slices.
         G4VoxelData* voxel_data = Read(filenames[0].c_str());
 
