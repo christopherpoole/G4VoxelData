@@ -78,10 +78,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4VoxelArray<uint8_t>* array =
         new G4VoxelArray<uint8_t>(data);
 
-    if (data->ndims == 2) {
-        array->spacing.push_back(1);
-        array->shape.push_back(1);
-        array->ndims += 1;
+    // Temporary workaround for 2d data
+    if (array->GetDimensions() == 2) {
+        std::vector<unsigned int> shape = array->GetShape();
+        shape.push_back(1);
+        array->SetShape(shape); 
+
+        std::vector<double> spacing = array->GetSpacing();
+        spacing.push_back(1);
+        array->SetSpacing(spacing);
+
+        array->SetDimensions(3);
     }
 
     // Presently we can only map agains the real part of complex numpyers

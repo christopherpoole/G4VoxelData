@@ -67,7 +67,35 @@ class G4VoxelArrayBase {
 
     }
 
-  public:
+    unsigned int GetLength() {
+        return this->length;
+    };
+
+    unsigned int GetDimensions() {
+        return this->ndims;
+    };
+
+    void SetDimensions(unsigned int ndims) {
+        this->ndims = ndims;
+    };
+
+    std::vector<unsigned int> GetShape() {
+        return this->shape;
+    };
+
+    void SetShape(std::vector<unsigned int> shape) {
+        this->shape = shape;
+    }
+
+    std::vector<double> GetSpacing() {
+        return this->spacing;
+    };
+
+    void SetSpacing(std::vector<double> spacing) {
+        this->spacing = spacing;
+    };
+
+  protected:
     unsigned int length;
     unsigned int ndims;
     

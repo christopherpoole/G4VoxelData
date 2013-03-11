@@ -63,6 +63,9 @@ public:
     {
         this->array = array;
 
+        this->shape = this->array->GetShape();
+        this->spacing = this->array->GetSpacing();
+
         this->materials_map = materials_map;
         this->mother_physical = mother_physical;
 
@@ -81,9 +84,9 @@ public:
         G4Material* air = nist_manager->FindOrBuildMaterial("G4_AIR");
 
         G4Box* voxeldata_solid =
-            new G4Box("voxeldata_solid", array->shape[0]*array->spacing[0]/2.,
-                                         array->shape[1]*array->spacing[1]/2.,
-                                         array->shape[2]*array->spacing[2]/2.);
+            new G4Box("voxeldata_solid", shape[0]*spacing[0]/2.,
+                                         shape[1]*spacing[1]/2.,
+                                         shape[2]*spacing[2]/2.);
         voxeldata_logical =
             new G4LogicalVolume(voxeldata_solid, air, "voxeldata_logical", 0, 0, 0);
         new G4PVPlacement(rotation, position,
@@ -93,36 +96,36 @@ public:
 
         // Y //
         G4VSolid* y_solid =
-            new G4Box("y_solid", array->shape[0]*array->spacing[0]/2.,
-                                 array->spacing[1]/2.,
-                                 array->shape[2]*array->spacing[2]/2.);
+            new G4Box("y_solid", shape[0]*spacing[0]/2.,
+                                 spacing[1]/2.,
+                                 shape[2]*spacing[2]/2.);
         y_logical = new G4LogicalVolume(y_solid, air, "y_logical");
         new G4PVReplica("y_replica", y_logical, voxeldata_logical,
-                        kYAxis, array->shape[1], array->spacing[1]);
+                        kYAxis, shape[1], spacing[1]);
         if (!this->visibility)
             y_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // X //
         G4VSolid* x_solid =
-            new G4Box("x_solid", array->spacing[0]/2.,
-                                 array->spacing[1]/2.,
-                                 array->shape[2]*array->spacing[2]/2.);
+            new G4Box("x_solid", spacing[0]/2.,
+                                 spacing[1]/2.,
+                                 shape[2]*spacing[2]/2.);
         x_logical = new G4LogicalVolume(x_solid, air, "x_logical");
-        new G4PVReplica("x_replica", x_logical, y_logical, kXAxis, array->shape[0],
-                        array->spacing[0]);
+        new G4PVReplica("x_replica", x_logical, y_logical, kXAxis, shape[0],
+                        spacing[0]);
         if (!this->visibility)
             x_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // VOXEL //
         G4VSolid* voxel_solid =
-            new G4Box("voxel_solid", array->spacing[0]/2.,
-                                     array->spacing[1]/2.,
-                                     array->spacing[2]/2.);
+            new G4Box("voxel_solid", spacing[0]/2.,
+                                     spacing[1]/2.,
+                                     spacing[2]/2.);
         voxel_logical = new G4LogicalVolume(voxel_solid, air, "voxel_logical");
         if (!this->visibility)
             voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
         
-        new G4PVParameterised("voxel_data", voxel_logical, x_logical, kUndefined, array->shape[2], this);
+        new G4PVParameterised("voxel_data", voxel_logical, x_logical, kUndefined, shape[2], this);
     };
 
     using G4VNestedParameterisation::ComputeMaterial;
@@ -150,7 +153,7 @@ public:
 
     G4int GetNumberOfMaterials() const
     {
-        return array->length;
+        return array->GetLength();
     };
 
     G4Material* GetMaterial(G4int i) const
@@ -176,7 +179,7 @@ public:
     {
         G4double x = 0;
         G4double y = 0;
-        G4double z = 2*copyNo*voxel_size.z() - array->shape[2]*voxel_size.z() + voxel_size.z();
+        G4double z = 2*copyNo*voxel_size.z() - shape[2]*voxel_size.z() + voxel_size.z();
 
         G4ThreeVector position(x, y, z);
         physVol->SetTranslation(position);
@@ -229,6 +232,9 @@ public:
     G4VoxelData* voxel_data;
     G4VoxelArray<T>* array;
     G4bool with_map;
+
+    std::vector<unsigned int> shape;
+    std::vector<double> spacing;
 
     G4VPhysicalVolume* mother_physical;
 
