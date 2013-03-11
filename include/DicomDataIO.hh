@@ -89,7 +89,7 @@ class DicomDataIO : public G4VoxelDataIO {
                 G4cerr << "No files of acquisition number " << acquisition_number
                     << " in directory." << G4endl;
         }
-        G4cout << sort << G4endl;
+        
         // Sort the files along the z-axis for stacking as a 3D array.
         std::vector<std::string> filenames;
         if (sort == true) {

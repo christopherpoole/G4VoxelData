@@ -80,7 +80,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     world_logical->SetVisAttributes(G4VisAttributes::Invisible);
     
     DicomDataIO* reader = new DicomDataIO();
-    // read and sort in z/slice direction 
+    // read and sort in z/slice direction: true 
     G4VoxelData* data = reader->ReadDirectory(dir, true);
 
     // We can peek at the data type with data->type, however at some point
