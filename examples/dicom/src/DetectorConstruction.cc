@@ -87,6 +87,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // we will have to nominate exactly what the type of the data is. For
     // standard DICOM CT as in this example we are using int16's.
     G4VoxelArray<int16_t>* array = new G4VoxelArray<int16_t>(data);
+    
+    // We can crop away unwanted parts of the dataset by setting
+    // array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
 
     // Make a mapping between the data in array and G4Materials
     // at increaments of 25 HU.

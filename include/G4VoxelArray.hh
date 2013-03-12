@@ -47,7 +47,35 @@ class G4VoxelArrayBase {
     };
 
     G4ThreeVector GetVolumeShape() {
+        if (this->cropped) {
+            return G4ThreeVector(cropped_shape[0], cropped_shape[1], cropped_shape[2]);
+        }
         return G4ThreeVector(shape[0], shape[1], shape[2]);
+    };
+
+    unsigned int GetIndex(unsigned int index) {
+        if (this->cropped) {
+            // variable offset
+            unsigned int x = 0;
+            unsigned int y = 0;
+            unsigned int z = 0;
+
+            if (shape[2] > cropped_shape[2]) {
+                z = index / (shape[2] - cropped_shape[2]);
+                if (shape[1] > cropped_shape[1]) {
+                    y = (z % (shape[2] - cropped_shape[2])) / (shape[1] - cropped_shape[1]);
+                }
+            }
+            if (shape[0] > cropped_shape[0]) {
+                unsigned int x = y % (shape[0] - cropped_shape[0]); 
+            }
+
+            index += GetIndex(x, y, z);
+
+            // static offest
+            index += GetIndex(crop_limits[0], crop_limits[2], crop_limits[4]);
+        }
+        return index;
     };
 
     unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z) {
@@ -65,6 +93,20 @@ class G4VoxelArrayBase {
               unsigned int y1, unsigned int y2,
               unsigned int z1, unsigned int z2) {
 
+        this->cropped = true;
+
+        crop_limits.clear();
+        crop_limits.push_back(x1);
+        crop_limits.push_back(x2);
+        crop_limits.push_back(y1);
+        crop_limits.push_back(y2);
+        crop_limits.push_back(z1);
+        crop_limits.push_back(z2);
+        
+        cropped_shape.clear();
+        cropped_shape.push_back(x2 - x1);
+        cropped_shape.push_back(y2 - y1);
+        cropped_shape.push_back(z2 - z1);
     }
 
     unsigned int GetLength() {
@@ -80,6 +122,9 @@ class G4VoxelArrayBase {
     };
 
     std::vector<unsigned int> GetShape() {
+        if (this->cropped) {
+            return this->cropped_shape; 
+        }
         return this->shape;
     };
 
@@ -103,6 +148,10 @@ class G4VoxelArrayBase {
 
     std::vector<unsigned int> shape;
     std::vector<double> spacing;
+
+    bool cropped;
+    std::vector<unsigned int> crop_limits;
+    std::vector<unsigned int> cropped_shape;
 };
 
 
@@ -121,8 +170,11 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
 
     ~G4VoxelArray() {};
 
+    using G4VoxelArrayBase<T>::GetIndex; 
+    
     virtual T GetValue(unsigned int x) {
-        return (*array)[x]; 
+        unsigned int index = GetIndex(x);
+        return (*array)[index]; 
     };
 
     T GetRoundedValue(unsigned int x, T rounder)
@@ -168,8 +220,11 @@ class G4VoxelArray<std::complex<T> > : public G4VoxelArrayBase<T> {
 
     ~G4VoxelArray() {};
 
+    using G4VoxelArrayBase<T>::GetIndex; 
+    
     T GetValue(unsigned int x) {
-        return ((*array)[x]).real(); 
+        unsigned int index = GetIndex(x);
+        return ((*array)[index]).real(); 
     };
 
     T GetRoundedValue(unsigned int x, std::complex<T> rounder)
