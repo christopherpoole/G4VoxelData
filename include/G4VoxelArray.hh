@@ -82,7 +82,6 @@ class G4VoxelArrayBase {
         crop_limits.push_back(z1);
         crop_limits.push_back(z2);
     
-        ClearCrop();    
         cropped_shape.push_back(x2 - x1);
         cropped_shape.push_back(y2 - y1);
         cropped_shape.push_back(z2 - z1);
