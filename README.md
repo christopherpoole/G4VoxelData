@@ -71,6 +71,8 @@ In a detector construction it looks like this:
 
     // Cropping, if desired
     // array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
+    // The current cropping can also be toggeled on of off
+    // array->Crop(bool);
 
     // Make a mapping between the data in array and G4Materials
     // at increaments of 25 HU.

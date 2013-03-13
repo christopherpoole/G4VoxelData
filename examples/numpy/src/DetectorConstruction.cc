@@ -93,8 +93,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     std::vector<unsigned int> shape = array->GetShape();
     // Crop if desired, array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
-    array->Crop(0, shape[0], 0, shape[1], 0, shape[2]);
-    
+    //array->Crop(0, shape[0], 0, shape[1], 0, shape[2]);
+    array->Crop(true);
+
     // Presently we can only map agains the real part of complex numpyers
     std::map<uint8_t, G4Material*> materials;
     std::map<uint8_t, G4Colour> colours;

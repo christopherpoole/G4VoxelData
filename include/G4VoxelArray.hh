@@ -81,17 +81,38 @@ class G4VoxelArrayBase {
         crop_limits.push_back(y2);
         crop_limits.push_back(z1);
         crop_limits.push_back(z2);
-        
-        cropped_shape.clear();
+    
+        ClearCrop();    
         cropped_shape.push_back(x2 - x1);
         cropped_shape.push_back(y2 - y1);
         cropped_shape.push_back(z2 - z1);
     }
 
+    void Crop(bool cropped) {
+        if (cropped && crop_limits.size() != 6) {
+            G4cerr << "Cropping limits must be set, Defaulting to array shape." << G4endl;
+
+            ClearCrop();
+            cropped_shape = shape;
+        }
+
+       this->cropped = cropped; 
+    };
+
     bool IsCropped() {
         return this->cropped;
     }
 
+    void ClearCrop() {
+        cropped_shape.clear();
+        crop_limits.push_back(0);
+        crop_limits.push_back(shape[0]);
+        crop_limits.push_back(0);
+        crop_limits.push_back(shape[1]);
+        crop_limits.push_back(0);
+        crop_limits.push_back(shape[2]);
+    }
+    
     std::vector<unsigned int> GetCropLimit() {
         return this->crop_limits;
     }; 
