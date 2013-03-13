@@ -54,27 +54,6 @@ class G4VoxelArrayBase {
     };
 
     unsigned int GetIndex(unsigned int index) {
-        if (this->cropped) {
-            // variable offset
-            unsigned int x = 0;
-            unsigned int y = 0;
-            unsigned int z = 0;
-
-            if (shape[2] > cropped_shape[2]) {
-                z = index / (shape[2] - cropped_shape[2]);
-                if (shape[1] > cropped_shape[1]) {
-                    y = (z % (shape[2] - cropped_shape[2])) / (shape[1] - cropped_shape[1]);
-                }
-            }
-            if (shape[0] > cropped_shape[0]) {
-                unsigned int x = y % (shape[0] - cropped_shape[0]); 
-            }
-
-            index += GetIndex(x, y, z);
-
-            // static offest
-            index += GetIndex(crop_limits[0], crop_limits[2], crop_limits[4]);
-        }
         return index;
     };
 
@@ -108,6 +87,14 @@ class G4VoxelArrayBase {
         cropped_shape.push_back(y2 - y1);
         cropped_shape.push_back(z2 - z1);
     }
+
+    bool IsCropped() {
+        return this->cropped;
+    }
+
+    std::vector<unsigned int> GetCropLimit() {
+        return this->crop_limits;
+    }; 
 
     unsigned int GetLength() {
         return this->length;

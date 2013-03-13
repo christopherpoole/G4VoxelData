@@ -79,7 +79,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         new G4VoxelArray<uint8_t>(data);
 
     // Temporary workaround for 2d data
-/*    if (array->GetDimensions() == 2) {
+    if (array->GetDimensions() == 2) {
         std::vector<unsigned int> shape = array->GetShape();
         shape.push_back(1);
         array->SetShape(shape); 
@@ -90,10 +90,10 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
         array->SetDimensions(3);
     }
-*/
+
     std::vector<unsigned int> shape = array->GetShape();
-    // Crop if desired with array->Crop(30, 34, 15, 112, 0, 1);
-    array->Crop(0, shape[0], 0, shape[1], 1, shape[2]-0);
+    // Crop if desired, array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
+    array->Crop(0, shape[0], 0, shape[1]/2, 0, shape[2]);
     
     // Presently we can only map agains the real part of complex numpyers
     std::map<uint8_t, G4Material*> materials;

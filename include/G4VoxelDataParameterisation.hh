@@ -138,6 +138,12 @@ public:
 
         if (z < 0) z = 0;
 
+        if (array->IsCropped()) {
+            x += array->GetCropLimit()[0];
+            y += array->GetCropLimit()[2];
+            z += array->GetCropLimit()[4];
+        }
+
         int index = array->GetIndex(x, y, z); 
         G4Material* VoxelMaterial = GetMaterial(index);
         
