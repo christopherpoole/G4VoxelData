@@ -2,6 +2,7 @@
 *.swp
 *.dcm
 
+build/
 examples/dicom/build/
 examples/numpy/build/
 
