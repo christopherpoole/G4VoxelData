@@ -147,9 +147,9 @@ public:
         int index = array->GetIndex(x, y, z); 
         G4Material* VoxelMaterial = GetMaterial(index);
         
-        if (this->visibility) {
-            physical_volume->GetLogicalVolume()->SetVisAttributes(colour_map[array->GetValue(index)]);
-        }
+//        if (this->visibility) {
+//            physical_volume->GetLogicalVolume()->SetVisAttributes(colour_map[array->GetValue(index)]);
+//        }
 
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 

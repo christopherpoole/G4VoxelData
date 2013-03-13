@@ -152,6 +152,8 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         this->spacing = data->spacing;
         this->order = data->order;
 
+        this->cropped = false;
+
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
     };
 
@@ -201,7 +203,9 @@ class G4VoxelArray<std::complex<T> > : public G4VoxelArrayBase<T> {
         this->shape = data->shape;
         this->spacing = data->spacing;
         this->order = data->order;
-        
+
+        this->cropped = false;
+
         this->array = reinterpret_cast<std::vector<std::complex<T> >*>(data->array);
     };
 
