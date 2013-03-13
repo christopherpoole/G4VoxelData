@@ -61,8 +61,9 @@ In a detector construction it looks like this:
     ...
 
     DicomDataIO* reader = new DicomDataIO(); 
-    // Filter by CT modality and aquisition number 1
-    G4VoxelData* data = reader->ReadDirectory(dir, "CT", 1);
+    // Sort in the slice direction (true), filter by CT
+    // modality and aquisition number 1
+    G4VoxelData* data = reader->ReadDirectory(dir, true, "CT", 1);
 
     // We can peek at the data type with data->type, however at some point
     // we will have to nominate exactly what the type of the data is. For
@@ -71,7 +72,7 @@ In a detector construction it looks like this:
 
     // Cropping, if desired
     // array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
-    // The current cropping can also be toggeled on of off
+    // The current cropping can also be toggeled on or off
     // array->Crop(bool);
 
     // Make a mapping between the data in array and G4Materials
