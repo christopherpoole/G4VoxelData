@@ -44,6 +44,7 @@ In the example usage we have an array of Hounsfiled units (DICOM CT) which we wi
 
 To place the data within a detector we use nested parameterised volumes, in pretty much the same way as described in GEANT4 example `extended/runAndEvent/RE02`.
 Using `G4VoxelDataParameterisation<sometype>(g4voxelarray, materialsmap)`, the parameterisation is initialised; to place it within the geometry `parameterisation->Construct(position, rotation)` will find the geometry located at `G4ThreeVector position` and rotated by `G4RotationMatrix rotation`.
+Before placement however, the dataset can be cropped to a smaller dimension if required.
 
 ## Usage (Developer)
 Developers can create their own voxel data readers or writers by inheriting from `G4VoxelDataIO`; the included DICOM reader `DicomDataIO` serves as an example usage.
@@ -67,6 +68,9 @@ In a detector construction it looks like this:
     // we will have to nominate exactly what the type of the data is. For
     // standard DICOM CT as in this example we are using int16's.
     G4VoxelArray<int16_t>* array = new G4VoxelArray<int16_t>(data);
+
+    // Cropping, if desired
+    // array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
 
     // Make a mapping between the data in array and G4Materials
     // at increaments of 25 HU.
