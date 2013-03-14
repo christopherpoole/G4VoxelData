@@ -83,7 +83,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // read and sort in z/slice direction: true
     // reader->SetSort(true);
     // reader->SetModality("CT");
-    // reader->SetAcquisitionNumber(1); 
+    // reader->SetAcquisitionNumber(1);
+    // reader->SetSlope(10);
+    // reader->SetIntercept(0); 
     G4VoxelData* data = reader->ReadDirectory(dir);
 
     // We can peek at the data type with data->type, however at some point

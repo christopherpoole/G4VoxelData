@@ -54,11 +54,16 @@ class DicomDataIO : public G4VoxelDataIO {
         this->sort = true;
         this->modality = "CT";
         this->acquisition_number = -1;
+
+        this->override_slope = false;
+        this->slope= 0;
+        this->override_intercept = false;
+        this->intercept = 0;
     };    
   
     void SetSort(bool sort) {
         this->sort = sort;
-    }
+    };
 
     void SetModality(G4String modality) {
         this->modality = modality;
@@ -66,6 +71,32 @@ class DicomDataIO : public G4VoxelDataIO {
     
     void SetAcquisitionNumber(int number) {
         this->acquisition_number = number;
+    };
+
+    void SetSlope(double slope) {
+        override_slope = true;
+        this->slope = slope;
+    };
+
+    bool IsOverrideSlope() {
+        return override_slope;
+    };
+
+    void ResetOverrideSlope() {
+        override_slope = false;
+    };
+
+    void SetIntercept(double intercept) {
+        override_intercept = true;
+        this->intercept = intercept;
+    };
+
+    bool IsOverrideIntercept() {
+        return override_intercept;
+    };
+
+    void ResetOverrideIntercept() {
+        override_intercept = false;
     };
 
   public:
@@ -189,9 +220,15 @@ class DicomDataIO : public G4VoxelDataIO {
         char* buffer_out = new char[buffer_length];
         image->GetBuffer(buffer_in);
 
+        if (!override_slope)
+            slope = image->GetSlope();
+
+        if (!override_intercept)
+            intercept = image->GetIntercept();
+
         gdcm::Rescaler rescaler = gdcm::Rescaler();
-        rescaler.SetIntercept(image->GetIntercept());
-        rescaler.SetSlope(image->GetSlope());
+        rescaler.SetIntercept(intercept);
+        rescaler.SetSlope(slope);
         rescaler.SetPixelFormat(pixel_format);
         rescaler.SetMinMaxForPixelType(((gdcm::PixelFormat)INT16).GetMin(),
                                        ((gdcm::PixelFormat)INT16).GetMax());
@@ -206,8 +243,12 @@ class DicomDataIO : public G4VoxelDataIO {
  public:
     bool sort;
     G4String modality;
-    G4int acquisition_number;
+    int acquisition_number;
 
+    bool override_slope;
+    double slope;
+    bool override_intercept;
+    double intercept;
 };
 
 #endif // DICOMDATAIO_H
