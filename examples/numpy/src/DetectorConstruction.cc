@@ -97,12 +97,12 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     // Presently we can only map agains the real part of complex numpyers
     std::map<uint8_t, G4Material*> materials;
-    std::map<uint8_t, G4Colour> colours;
+    std::map<uint8_t, G4Colour*> colours;
     for (int i=0; i<256; i++) {
         materials[i] = water;
 
         double gray = (double) i / 255.;
-        colours[i] = G4Colour(gray, gray, gray, 1);
+        colours[i] = new G4Colour(gray, gray, gray, 1);
     }
     
     // The first template param is for the Array, second is for the map.
