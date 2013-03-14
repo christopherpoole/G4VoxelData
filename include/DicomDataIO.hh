@@ -50,8 +50,26 @@
 
 class DicomDataIO : public G4VoxelDataIO {
   public:
-    G4VoxelData* ReadDirectory(G4String directory, G4bool sort, G4String modality="CT",
-            G4int acquisition_number=-1)
+    DicomDataIO() {
+        this->sort = true;
+        this->modality = "CT";
+        this->acquisition_number = -1;
+    };    
+  
+    void SetSort(bool sort) {
+        this->sort = sort;
+    }
+
+    void SetModality(G4String modality) {
+        this->modality = modality;
+    };
+    
+    void SetAcquisitionNumber(int number) {
+        this->acquisition_number = number;
+    };
+
+  public:
+    G4VoxelData* ReadDirectory(G4String directory)
     {
         gdcm::Directory dir;
         dir.Load((const char*) directory.c_str());
@@ -184,6 +202,12 @@ class DicomDataIO : public G4VoxelDataIO {
 
         return new G4VoxelData(buffer, buffer_length/sizeof(int16_t), ndims, shape, spacing, origin, INT16);
     };
+  
+ public:
+    bool sort;
+    G4String modality;
+    G4int acquisition_number;
+
 };
 
 #endif // DICOMDATAIO_H
