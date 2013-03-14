@@ -106,6 +106,23 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     voxeldata_param->Construct(G4ThreeVector(), new G4RotationMatrix());
     voxeldata_param->SetRounding(25, -1000, 2000);
 
+    std::map<int16_t, G4Colour*> colours;
+    for (int i=-2500; i<5000; i++) {
+        double gray = (double) (i + 2500) / 4000.;
+        double alpha = 1;
+
+        if (i < -500) {
+            gray = 0;
+            alpha = 0;
+        }
+
+        if (gray > 1)
+            gray = 1;
+
+        colours[i] = new G4Colour(gray, gray, gray, alpha);
+    }
+    voxeldata_param->SetColourMap(colours);
+
     SensitiveDetector* detector = new SensitiveDetector("target_detector");
 
     G4SDManager* sd_manager = G4SDManager::GetSDMpointer();

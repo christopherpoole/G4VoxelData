@@ -147,11 +147,26 @@ public:
         int index = array->GetIndex(x, y, z); 
         G4Material* VoxelMaterial = GetMaterial(index);
 
-//        G4Colour colour = *(colour_map[array->GetValue(index)]);
+        G4Colour colour = *(colour_map[array->GetValue(index)]);
+        bool show = false;
 
 //        if (this->visibility) {
-//            physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
-//        }
+        if (x == array->GetShape()[0]/2 + array->GetCropLimit()[0]) {
+            show = true;
+            physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
+        }
+        if (y == array->GetShape()[1]/2 + array->GetCropLimit()[2]) {
+            show = true;
+            physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
+        }
+        if (z == array->GetShape()[2]/2 + array->GetCropLimit()[4]) {
+            show = true;
+            physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
+        }
+        
+        if (!show){ 
+            physical_volume->GetLogicalVolume()->SetVisAttributes(G4VisAttributes::Invisible);
+        }
 
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
