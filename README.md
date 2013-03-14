@@ -53,6 +53,7 @@ The derived class must implement at least `G4VoxelDataIO::Read` and/or `G4VoxelD
 ## Compiling/Running the Example
 For the DICOM example, all CT slices in a folder are sorted and loaded as a nested parameterised volume along with a user defined `std::map<int, G4Material*>`.
 Sometimes multiple acquisitions of the same CT dataset exist in a directory, so the user can specify the exact acquisition to use to avoid overlapping slices from multiple acquisitions.
+The modality of the DICOM data can be selected and the default slope/intercept of the CT data can be overridden if required.
 In a detector construction it looks like this:
 
     #include "DicomDataIO.hh"
@@ -61,9 +62,12 @@ In a detector construction it looks like this:
     ...
 
     DicomDataIO* reader = new DicomDataIO(); 
-    // Sort in the slice direction (true), filter by CT
-    // modality and aquisition number 1
-    G4VoxelData* data = reader->ReadDirectory(dir, true, "CT", 1);
+    // reader->SetSort(true);
+    // reader->SetModality("CT");
+    // reader->SetAcquisitionNumber(1);
+    // reader->SetSlope(10);
+    // reader->SetIntercept(0); 
+    G4VoxelData* data = reader->ReadDirectory(dir);
 
     // We can peek at the data type with data->type, however at some point
     // we will have to nominate exactly what the type of the data is. For
