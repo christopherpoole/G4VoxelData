@@ -108,7 +108,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     std::map<int16_t, G4Colour*> colours;
     for (int i=-2500; i<5000; i++) {
-        double gray = (double) (i + 2500) / 4000.;
+        double gray = (double) (i + 2500) / 7500.;
         double alpha = 1;
 
         if (i < -500) {

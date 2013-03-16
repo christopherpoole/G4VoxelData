@@ -76,6 +76,18 @@ public:
         this->trim_values = false; 
 
         this->visibility = false;
+        this->show_bounding_box = false;
+
+        // User defined nth planes in each direction where every (shape/2)+1
+        // plane starting at 0 will show the mid planes, assuming no cropping,
+        // every 1st plance starting at 0 will show everything (default).
+        this->show_user_planes = false;
+        this->xth_plane = 1;
+        this->xth_offset = 0;
+        this->yth_plane = 1;
+        this->yth_offset = 0;
+        this->zth_plane = 1;
+        this->zth_offset = 0;
     };
 
     virtual ~G4VoxelDataParameterisation(){
@@ -93,7 +105,7 @@ public:
             new G4LogicalVolume(voxeldata_solid, air, "voxeldata_logical", 0, 0, 0);
         new G4PVPlacement(rotation, position,
             "voxeldata_container", voxeldata_logical, mother_physical, 0, false, 0);
-//        if (!this->visibility)
+        if (!this->show_bounding_box)
             voxeldata_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
         // Y //
@@ -140,6 +152,7 @@ public:
 
         if (z < 0) z = 0;
 
+        // Correct index for cropping distances
         unsigned int offset_x = 0;
         unsigned int offset_y = 0;
         unsigned int offset_z = 0;
@@ -149,28 +162,34 @@ public:
             offset_y = array->GetCropLimit()[2];
             offset_z = array->GetCropLimit()[4];
         }
-
-        x += offset_x;
-        y += offset_y;
-        z += offset_z;
-
-        int index = array->GetIndex(x, y, z); 
+        
+        int index = array->GetIndex(x + offset_x, y + offset_y, z + offset_z); 
         G4Material* VoxelMaterial = GetMaterial(index);
+        physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
         G4Colour colour = *(colour_map[array->GetValue(index)]);
 
+        // Recalculate midplanes in not specified by user
+        if (show_user_planes) {
+            this->xth_plane = array->GetShape()[0]/2 + 1;
+            this->xth_offset = 0;
+            this->yth_plane = array->GetShape()[1]/2 + 1;
+            this->yth_offset = 0;
+            this->zth_plane = array->GetShape()[2]/2 + 1;
+            this->zth_offset = 0;
+        }
+
         if (this->visibility) {
-            if (x == array->GetShape()[0]/2 + offset_x ||
-                y == array->GetShape()[1]/2 + offset_y ||
-                z == array->GetShape()[2]/2 + offset_z) {
+            if ((x + 1) % xth_plane == xth_offset ||
+                (y + 1) % yth_plane == yth_offset ||
+                (z + 1) % xth_plane == zth_offset)
+            {
                 physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
             } else {
                 physical_volume->GetLogicalVolume()->SetVisAttributes(
                         G4VisAttributes::Invisible);
             }
         }
-
-        physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
         return VoxelMaterial;
     };
@@ -269,6 +288,15 @@ public:
     G4LogicalVolume* y_logical;
 
     G4bool visibility;
+    G4bool show_bounding_box;
+    G4bool show_user_planes;
+    unsigned int xth_plane;
+    unsigned int xth_offset;
+    unsigned int yth_plane;
+    unsigned int yth_offset;
+    unsigned int zth_plane;
+    unsigned int zth_offset;
+
     std::map<U, G4Colour*> colour_map;
   
     // For reading array as rounded to some increment 
