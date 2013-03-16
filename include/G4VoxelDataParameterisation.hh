@@ -74,6 +74,8 @@ public:
    
         this->round_values = false; 
         this->trim_values = false; 
+
+        this->visibility = false;
     };
 
     virtual ~G4VoxelDataParameterisation(){
@@ -122,8 +124,8 @@ public:
                                      spacing[1]/2.,
                                      spacing[2]/2.);
         voxel_logical = new G4LogicalVolume(voxel_solid, air, "voxel_logical");
-//        if (!this->visibility)
-//            voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
+        if (!this->visibility)
+            voxel_logical->SetVisAttributes(G4VisAttributes::Invisible);
         
         new G4PVParameterised("voxel_data", voxel_logical, x_logical, kUndefined, shape[2], this);
     };
@@ -138,34 +140,34 @@ public:
 
         if (z < 0) z = 0;
 
+        unsigned int offset_x = 0;
+        unsigned int offset_y = 0;
+        unsigned int offset_z = 0;
+
         if (array->IsCropped()) {
-            x += array->GetCropLimit()[0];
-            y += array->GetCropLimit()[2];
-            z += array->GetCropLimit()[4];
+            offset_x = array->GetCropLimit()[0];
+            offset_y = array->GetCropLimit()[2];
+            offset_z = array->GetCropLimit()[4];
         }
+
+        x += offset_x;
+        y += offset_y;
+        z += offset_z;
 
         int index = array->GetIndex(x, y, z); 
         G4Material* VoxelMaterial = GetMaterial(index);
 
         G4Colour colour = *(colour_map[array->GetValue(index)]);
-        bool show = false;
 
-//        if (this->visibility) {
-        if (x == array->GetShape()[0]/2 + array->GetCropLimit()[0]) {
-            show = true;
-            physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
-        }
-        if (y == array->GetShape()[1]/2 + array->GetCropLimit()[2]) {
-            show = true;
-            physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
-        }
-        if (z == array->GetShape()[2]/2 + array->GetCropLimit()[4]) {
-            show = true;
-            physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
-        }
-        
-        if (!show){ 
-            physical_volume->GetLogicalVolume()->SetVisAttributes(G4VisAttributes::Invisible);
+        if (this->visibility) {
+            if (x == array->GetShape()[0]/2 + offset_x ||
+                y == array->GetShape()[1]/2 + offset_y ||
+                z == array->GetShape()[2]/2 + offset_z) {
+                physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
+            } else {
+                physical_volume->GetLogicalVolume()->SetVisAttributes(
+                        G4VisAttributes::Invisible);
+            }
         }
 
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);

@@ -122,7 +122,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         colours[i] = new G4Colour(gray, gray, gray, alpha);
     }
     voxeldata_param->SetColourMap(colours);
-
+    // voxeldata_param->SetVisibility(false);
+    
     SensitiveDetector* detector = new SensitiveDetector("target_detector");
 
     G4SDManager* sd_manager = G4SDManager::GetSDMpointer();
