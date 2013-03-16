@@ -49,7 +49,19 @@ class G4VoxelArrayBase {
         this->spacing = data->spacing;
         this->order = data->order;
 
-        ClearCrop();
+        this->cropped_shape = this->shape;
+
+        // x-direction
+        this->crop_limits.push_back(0);
+        this->crop_limits.push_back(this->shape[0]);
+        // y-direction
+        this->crop_limits.push_back(0);
+        this->crop_limits.push_back(this->shape[1]);
+        // z-direction
+        this->crop_limits.push_back(0);
+        this->crop_limits.push_back(this->shape[2]);
+
+        this->cropped = false;
     }
   
     G4ThreeVector GetVoxelSize() {
@@ -78,22 +90,33 @@ class G4VoxelArrayBase {
         return index;
     };
 
+    void CropAxis(unsigned int imin, unsigned int imax, unsigned int axis) {
+        cropped_shape[axis] = imax - imin;
+
+        crop_limits[2*axis] = imin;
+        crop_limits[(2*axis) + 1] = imax;
+
+        cropped = true;
+    };
+
+    void CropX(unsigned int xmin, unsigned int xmax) {
+        CropAxis(xmin, xmax, 0);
+    };
+
+    void CropY(unsigned int ymin, unsigned int ymax) {
+        CropAxis(ymin, ymax, 1);
+    };
+
+    void CropZ(unsigned int zmin, unsigned int zmax) {
+        CropAxis(zmin, zmax, 2);
+    };
+
     void Crop(unsigned int xmin, unsigned int xmax,
               unsigned int ymin, unsigned int ymax,
               unsigned int zmin, unsigned int zmax) {
-
-        this->cropped = true;
-
-        cropped_shape.push_back(xmax - xmin);
-        cropped_shape.push_back(ymax - ymin);
-        cropped_shape.push_back(zmax - zmin);
-
-        crop_limits[0] = xmin;
-        crop_limits[1] = xmax;
-        crop_limits[2] = ymin;
-        crop_limits[3] = ymax;
-        crop_limits[4] = zmin;
-        crop_limits[5] = zmax;
+        CropX(xmin, xmax);
+        CropY(ymin, ymax);
+        CropZ(zmin, zmax);
     }
 
     void Crop(bool cropped) {
@@ -105,17 +128,9 @@ class G4VoxelArrayBase {
     }
 
     void ClearCrop() {
-        cropped_shape = shape;
-
-        // x-direction
-        crop_limits.push_back(0);
-        crop_limits.push_back(shape[0]);
-        // y-direction
-        crop_limits.push_back(0);
-        crop_limits.push_back(shape[1]);
-        // z-direction
-        crop_limits.push_back(0);
-        crop_limits.push_back(shape[2]);
+        CropX(0, shape[0]); 
+        CropY(0, shape[1]); 
+        CropZ(0, shape[2]); 
         
         cropped = false;
     }
