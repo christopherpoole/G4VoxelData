@@ -78,19 +78,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4VoxelArray<uint8_t>* array =
         new G4VoxelArray<uint8_t>(data);
 
-    // Temporary workaround for 2d data
-    if (array->GetDimensions() == 2) {
-        std::vector<unsigned int> shape = array->GetShape();
-        shape.push_back(1);
-        array->SetShape(shape); 
-
-        std::vector<double> spacing = array->GetSpacing();
-        spacing.push_back(1);
-        array->SetSpacing(spacing);
-
-        array->SetDimensions(3);
-    }
-
     std::vector<unsigned int> shape = array->GetShape();
     // Crop if desired, array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
     //array->Crop(0, shape[0], 0, shape[1], 0, shape[2]);
@@ -109,6 +96,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4VoxelDataParameterisation<uint8_t>* voxeldata_param =
         new G4VoxelDataParameterisation<uint8_t>(array, materials,
                                                                 world_physical);
+    
     voxeldata_param->SetColourMap(colours);
 
     G4RotationMatrix* rot = new G4RotationMatrix;

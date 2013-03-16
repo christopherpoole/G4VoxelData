@@ -62,7 +62,7 @@ class NumpyDataIO : public G4VoxelDataIO {
 
         std::vector<char>* buffer = new std::vector<char>(array.data, array.data + size);
         
-        return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, COLUMN_MAJOR);
+        return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, ROW_MAJOR);
     };
 };
 
