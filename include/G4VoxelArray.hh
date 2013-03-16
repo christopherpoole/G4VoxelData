@@ -68,23 +68,23 @@ class G4VoxelArrayBase {
         return index;
     };
 
-    void Crop(unsigned int x1, unsigned int x2,
-              unsigned int y1, unsigned int y2,
-              unsigned int z1, unsigned int z2) {
+    void Crop(unsigned int xmin, unsigned int xmax,
+              unsigned int ymin, unsigned int ymax,
+              unsigned int zmin, unsigned int zmax) {
 
         this->cropped = true;
 
         crop_limits.clear();
-        crop_limits.push_back(x1);
-        crop_limits.push_back(x2);
-        crop_limits.push_back(y1);
-        crop_limits.push_back(y2);
-        crop_limits.push_back(z1);
-        crop_limits.push_back(z2);
+        crop_limits.push_back(xmin);
+        crop_limits.push_back(xmax);
+        crop_limits.push_back(ymin);
+        crop_limits.push_back(ymax);
+        crop_limits.push_back(zmin);
+        crop_limits.push_back(zmax);
     
-        cropped_shape.push_back(x2 - x1);
-        cropped_shape.push_back(y2 - y1);
-        cropped_shape.push_back(z2 - z1);
+        cropped_shape.push_back(xmax - xmin);
+        cropped_shape.push_back(ymax - ymin);
+        cropped_shape.push_back(zmax - zmin);
     }
 
     void Crop(bool cropped) {
@@ -173,7 +173,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         this->order = data->order;
 
         this->cropped = false;
-
+        
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
     };
 
