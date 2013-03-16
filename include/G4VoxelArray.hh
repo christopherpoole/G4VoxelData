@@ -42,6 +42,16 @@
 template <typename T>
 class G4VoxelArrayBase {
   public:
+    void Init(G4VoxelData* data) {
+      this->length = data->length;
+        this->ndims = data->ndims;
+        this->shape = data->shape;
+        this->spacing = data->spacing;
+        this->order = data->order;
+
+        ClearCrop();
+    }
+  
     G4ThreeVector GetVoxelSize() {
         return G4ThreeVector(spacing[0]/2., spacing[1]/2., spacing[2]/2.);
     };
@@ -74,27 +84,19 @@ class G4VoxelArrayBase {
 
         this->cropped = true;
 
-        crop_limits.clear();
-        crop_limits.push_back(xmin);
-        crop_limits.push_back(xmax);
-        crop_limits.push_back(ymin);
-        crop_limits.push_back(ymax);
-        crop_limits.push_back(zmin);
-        crop_limits.push_back(zmax);
-    
         cropped_shape.push_back(xmax - xmin);
         cropped_shape.push_back(ymax - ymin);
         cropped_shape.push_back(zmax - zmin);
+
+        crop_limits[0] = xmin;
+        crop_limits[1] = xmax;
+        crop_limits[2] = ymin;
+        crop_limits[3] = ymax;
+        crop_limits[4] = zmin;
+        crop_limits[5] = zmax;
     }
 
     void Crop(bool cropped) {
-        if (cropped && crop_limits.size() != 6) {
-            G4cerr << "Cropping limits must be set, Defaulting to array shape." << G4endl;
-
-            ClearCrop();
-            cropped_shape = shape;
-        }
-
        this->cropped = cropped; 
     };
 
@@ -103,13 +105,19 @@ class G4VoxelArrayBase {
     }
 
     void ClearCrop() {
-        cropped_shape.clear();
+        cropped_shape = shape;
+
+        // x-direction
         crop_limits.push_back(0);
         crop_limits.push_back(shape[0]);
+        // y-direction
         crop_limits.push_back(0);
         crop_limits.push_back(shape[1]);
+        // z-direction
         crop_limits.push_back(0);
         crop_limits.push_back(shape[2]);
+        
+        cropped = false;
     }
     
     std::vector<unsigned int> GetCropLimit() {
@@ -165,14 +173,10 @@ class G4VoxelArrayBase {
 template <typename T>
 class G4VoxelArray : public G4VoxelArrayBase<T> {
   public:
-    G4VoxelArray(G4VoxelData* data) {
-        this->length = data->length;
-        this->ndims = data->ndims;
-        this->shape = data->shape;
-        this->spacing = data->spacing;
-        this->order = data->order;
+    using G4VoxelArrayBase<T>::Init;
 
-        this->cropped = false;
+    G4VoxelArray(G4VoxelData* data) {
+        Init(data);
         
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
     };
@@ -217,15 +221,11 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
 template <typename T>
 class G4VoxelArray<std::complex<T> > : public G4VoxelArrayBase<T> {
   public:
+    using G4VoxelArrayBase<T>::Init;
+
     G4VoxelArray(G4VoxelData* data) {
-        this->length = data->length;
-        this->ndims = data->ndims;
-        this->shape = data->shape;
-        this->spacing = data->spacing;
-        this->order = data->order;
-
-        this->cropped = false;
-
+        Init(data);
+        
         this->array = reinterpret_cast<std::vector<std::complex<T> >*>(data->array);
     };
 
