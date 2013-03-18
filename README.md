@@ -108,3 +108,20 @@ Make sure you have some DICOM CT data in a directory:
     ./build/VoxelDataExample /path/to/dicom_ct/
 
 BeamOn is called from `macro/vis.mac`, when running, you will get some output from the sensitive detector printing the name of the current material. Note that the material ramp in this example is arbitrary and not suitable for use in anything real (yet).
+
+## Visualisation
+The user can specify every nth voxel to show in each of the x, y and z directions.
+This helps to eliminate some of the memory overhead associated with visualising large voxelised datasets in GEANT4.
+A number of methods are available for tuning the display of the data to your liking, here show the x and y direction midplanes and every 15th plane in the z direction starting with the 0th.:
+
+    G4VoxelDataParameterisation<int16_t>* voxeldata_param =
+        new G4VoxelDataParameterisation<int16_t>(array, materials, world_physical);
+
+    std::map<int16_t, G4Colour*> colours; = MakeColours();
+    voxeldata_param->SetColourMap(colours);
+    // voxeldata_param->SetVisibility(false);
+    voxeldata_param->ShowMidPlanes();
+    voxeldata_param->ShowZPlanes(15, 0);
+    
+
+![Screen Shot](https://raw.github.com/christopherpoole/G4VoxelData/master/screenshot_ct.png)

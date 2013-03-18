@@ -103,8 +103,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     G4VoxelDataParameterisation<int16_t>* voxeldata_param =
         new G4VoxelDataParameterisation<int16_t>(array, materials, world_physical );
-    voxeldata_param->Construct(G4ThreeVector(), new G4RotationMatrix());
+
+    G4RotationMatrix* rotation = new G4RotationMatrix();
+    rotation->rotateX(90*deg);
+
+    voxeldata_param->Construct(G4ThreeVector(), rotation);
     voxeldata_param->SetRounding(25, -1000, 2000);
+    voxeldata_param->ShowMidPlanes();
+    voxeldata_param->ShowZPlanes(15, 0); // every 15th slice
 
     std::map<int16_t, G4Colour*> colours;
     for (int i=-2500; i<5000; i++) {
@@ -122,7 +128,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
         colours[i] = new G4Colour(gray, gray, gray, alpha);
     }
     voxeldata_param->SetColourMap(colours);
-    // voxeldata_param->SetVisibility(false);
     
     SensitiveDetector* detector = new SensitiveDetector("target_detector");
 
