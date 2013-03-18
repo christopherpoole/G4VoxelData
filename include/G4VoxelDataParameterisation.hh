@@ -81,7 +81,7 @@ public:
         // User defined nth planes in each direction where every (shape/2)+1
         // plane starting at 0 will show the mid planes, assuming no cropping,
         // every 1st plance starting at 0 will show everything (default).
-        this->show_user_planes = false;
+        this->show_user_planes = true;
         this->xth_plane = 1;
         this->xth_offset = 0;
         this->yth_plane = 1;
@@ -258,6 +258,10 @@ public:
 
     void SetVisibility(G4bool visibility) {
         this->visibility = visibility;
+    };
+
+    void SetShowPlanes(G4bool show) {
+        this->show_user_planes = show;
     };
 
     void SetColourMap(std::map<U, G4Colour*> colour_map) {
