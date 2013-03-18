@@ -167,7 +167,7 @@ public:
         G4Material* VoxelMaterial = GetMaterial(index);
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
-        G4Colour colour = *(colour_map[array->GetValue(index)]);
+        G4Colour colour = *(GetColour(index));
 
         // Recalculate midplanes in not specified by user
         if (show_user_planes) {
@@ -218,6 +218,21 @@ public:
     {
         return copyNo;   
     };
+
+    G4Colour* GetColour(G4int i) const
+    {
+        U value;
+        if (round_values && trim_values) {
+            value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
+        } else if (round_values && !trim_values) {
+            value = array->GetRoundedValue(i, rounder); 
+        } else {
+            value = array->GetValue(i);
+        }
+
+        return colour_map.at(value);
+    };
+
 
     void ComputeTransformation(const G4int copyNo, G4VPhysicalVolume *physVol) const
     {
