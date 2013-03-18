@@ -80,8 +80,7 @@ public:
 
         // User defined nth planes in each direction where every (shape/2)+1
         // plane starting at 0 will show the mid planes, assuming no cropping,
-        // every 1st plance starting at 0 will show everything (default).
-        this->show_user_planes = true;
+        // every 1st plane starting at 0 will show everything (default).
         this->xth_plane = 1;
         this->xth_offset = 0;
         this->yth_plane = 1;
@@ -169,20 +168,10 @@ public:
 
         G4Colour colour = *(GetColour(index));
 
-        // Recalculate midplanes in not specified by user
-        if (show_user_planes) {
-            this->xth_plane = array->GetShape()[0]/2 + 1;
-            this->xth_offset = 0;
-            this->yth_plane = array->GetShape()[1]/2 + 1;
-            this->yth_offset = 0;
-            this->zth_plane = array->GetShape()[2]/2 + 1;
-            this->zth_offset = 0;
-        }
-
         if (this->visibility) {
             if ((x + 1) % xth_plane == xth_offset ||
                 (y + 1) % yth_plane == yth_offset ||
-                (z + 1) % xth_plane == zth_offset)
+                (z + 1) % zth_plane == zth_offset)
             {
                 physical_volume->GetLogicalVolume()->SetVisAttributes(colour);
             } else {
@@ -260,9 +249,33 @@ public:
         this->visibility = visibility;
     };
 
-    void SetShowPlanes(G4bool show) {
-        this->show_user_planes = show;
+    void ShowXPlanes(unsigned int plane, unsigned int offset) {
+        this->xth_plane = plane;
+        this->xth_offset = offset;
     };
+    void ShowYPlanes(unsigned int plane, unsigned int offset) {
+        this->yth_plane = plane;
+        this->yth_offset = offset;
+    };
+
+    void ShowZPlanes(unsigned int plane, unsigned int offset) {
+        this->zth_plane = plane;
+        this->zth_offset = offset;
+    };
+
+    void ShowPlanes(unsigned int xplane, unsigned int xoffset,
+                       unsigned int yplane, unsigned int yoffset,
+                       unsigned int zplane, unsigned int zoffset) {
+        ShowXPlanes(xplane, xoffset);
+        ShowYPlanes(yplane, yoffset);
+        ShowZPlanes(zplane, zoffset);
+    };
+
+    void ShowMidPlanes() {
+        ShowXPlanes(array->GetShape()[0]/2 + 1, 0);
+        ShowYPlanes(array->GetShape()[1]/2 + 1, 0);
+        ShowZPlanes(array->GetShape()[2]/2 + 1, 0);
+    }
 
     void SetColourMap(std::map<U, G4Colour*> colour_map) {
         SetVisibility(true);
