@@ -166,9 +166,9 @@ public:
         G4Material* VoxelMaterial = GetMaterial(index);
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
-        G4Colour colour = *(GetColour(index));
-
         if (this->visibility) {
+            G4Colour colour = *(GetColour(index));
+
             if ((x + 1) % xth_plane == xth_offset ||
                 (y + 1) % yth_plane == yth_offset ||
                 (z + 1) % zth_plane == zth_offset)
