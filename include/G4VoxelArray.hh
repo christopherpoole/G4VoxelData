@@ -170,6 +170,15 @@ class G4VoxelArrayBase {
         this->spacing = spacing;
     };
 
+    void SetSpacing(G4ThreeVector spacing) {
+        std::vector<double> s;
+        s.push_back(spacing.x());
+        s.push_back(spacing.y());
+        s.push_back(spacing.z());
+
+        this->spacing = s;
+    };
+
   protected:
     unsigned int length;
     unsigned int ndims;
