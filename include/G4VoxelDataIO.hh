@@ -49,7 +49,7 @@ class G4VoxelDataIO {
         return NULL;
     };
 
-    virtual void Write(G4String) {
+    virtual void Write(G4String, G4VoxelData*) {
         G4Exception("G4VoxelData::Write", "Writing data not implemented.",
                 FatalException, "");
     };
