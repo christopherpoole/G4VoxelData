@@ -68,7 +68,7 @@ class NumpyDataIO : public G4VoxelDataIO {
     template <typename T>
     void Write(G4String filename, G4VoxelData* data) {
         const unsigned int shape[] = {data->shape[0], data->shape[1], data->shape[2]};
-        cnpy::npy_save("test.npy", reinterpret_cast<T*>(&data->array->front()), shape, data->ndims, "w", "F");
+        cnpy::npy_save(filename, reinterpret_cast<T*>(&data->array->front()), shape, data->ndims, "w", "F");
     };
 };
 
