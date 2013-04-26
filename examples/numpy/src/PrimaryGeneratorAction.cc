@@ -47,9 +47,9 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     G4ParticleDefinition* particle = particle_table->FindParticle("e-");
   
     particle_gun->SetParticleDefinition(particle);
-    particle_gun->SetParticlePosition(G4ThreeVector(0, -12*mm, 0*m));
+    particle_gun->SetParticlePosition(G4ThreeVector(0, -12*mm, 20*mm));
     particle_gun->SetParticleEnergy(1.*MeV);
-    particle_gun->SetParticleMomentumDirection(G4ThreeVector(0, 0, 1));
+    particle_gun->SetParticleMomentumDirection(G4ThreeVector(0, 0, -1));
 
     detector_construction = (DetectorConstruction*) (G4RunManager::GetRunManager()->GetUserDetectorConstruction());
 }
