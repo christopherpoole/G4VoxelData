@@ -33,8 +33,10 @@
 #include <vector>
 #include <inttypes.h>
 
-
+// G4VoxelData //
 #include "G4VoxelData.hh"
+#include "NumpyDataIO.hh"
+#include "G4VoxelDetector.hh"
 
 // GEANT4 //
 #include "G4VUserDetectorConstruction.hh"
@@ -52,12 +54,16 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     ~DetectorConstruction();
 
     G4VPhysicalVolume* Construct();
+    void WriteHistograms();
 
   private:
     G4Box* world_solid;
     G4LogicalVolume* world_logical;
     G4VPhysicalVolume* world_physical;
-    
+   
+    NumpyDataIO* io;
+    G4VoxelDetector<double>* scorer;
+
     G4String filename;
 };
 #endif

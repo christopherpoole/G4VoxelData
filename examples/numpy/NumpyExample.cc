@@ -45,7 +45,7 @@ int main(int, char** argv)
 {
     G4RunManager* run_manager = new G4RunManager;
 
-    G4VUserDetectorConstruction* detector_construction = new DetectorConstruction(argv[1]);
+    DetectorConstruction* detector_construction = new DetectorConstruction(argv[1]);
     run_manager->SetUserInitialization(detector_construction);
 
     G4VUserPhysicsList* physics_list = new PhysicsList;
@@ -56,7 +56,6 @@ int main(int, char** argv)
 
     run_manager->Initialize();
 
-
     G4VisManager* vis_manager = new G4VisExecutive;
     vis_manager->Initialize();
 
@@ -64,11 +63,12 @@ int main(int, char** argv)
 
     G4UIsession* session = new G4UIterminal(new G4UItcsh);
     UI->ApplyCommand("/control/execute macros/vis.mac");
-    session->SessionStart();
+    //session->SessionStart();
+
+    detector_construction->WriteHistograms();
+
     delete session;
-
     delete vis_manager;
-
     delete run_manager;
 
     return 0;

@@ -45,14 +45,14 @@
 
 
 // G4VoxelData //
-#include "NumpyDataIO.hh"
 #include "G4VoxelDataParameterisation.hh"
-#include "G4VoxelDetector.hh"
 
 
 DetectorConstruction::DetectorConstruction(G4String filename)
 {
     this->filename = filename;
+    
+    io = new NumpyDataIO(); 
 }
 
 
@@ -73,8 +73,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             "world_physical", 0, false, 0);
     world_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
-    NumpyDataIO* reader = new NumpyDataIO(); 
-    G4VoxelData* data = reader->Read(filename);
+    G4VoxelData* data = io->Read(filename);
 
     G4VoxelArray<uint8_t>* array =
         new G4VoxelArray<uint8_t>(data);
@@ -104,16 +103,21 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     rot->rotateZ(90*deg);
     voxeldata_param->Construct(G4ThreeVector(), rot);
 
-    // Setup scoring
-    G4VoxelDetector<double>* scorer = new G4VoxelDetector<double>("detector", array->GetShape(), array->GetSpacing());
-    scorer->SetDebug(true);
-    //reader->Write<double>("scorer.npy", scorer->GetEnergyHistogram()->GetData());
+    // Setup scoring with bins that are doubles
+    scorer = new G4VoxelDetector<double>("detector", array->GetShape(), array->GetSpacing());
+    //scorer->SetDebug(true);
 
     G4SDManager* sensitive_detector_manager = G4SDManager::GetSDMpointer();
     sensitive_detector_manager->AddNewDetector(scorer);
     voxeldata_param->GetLogicalVolume()->SetSensitiveDetector(scorer);
 
-
     return world_physical;
+}
+
+void DetectorConstruction::WriteHistograms() {
+    G4cout << "writing" << G4endl;
+    io->Write<double>("energy_histogram.npy", scorer->GetEnergyHistogram()->GetData());
+    io->Write<double>("energysq_histogram.npy", scorer->GetEnergyHistogram()->GetData());
+    io->Write<double>("counts_histogram.npy", scorer->GetEnergyHistogram()->GetData());
 }
 
