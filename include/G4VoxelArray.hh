@@ -43,6 +43,8 @@ template <typename T>
 class G4VoxelArrayBase {
   public:
     void Init(G4VoxelData* data) {
+        this->data = data;
+
         this->length = data->length;
         this->ndims = data->ndims;
         this->shape = data->shape;
@@ -63,7 +65,11 @@ class G4VoxelArrayBase {
 
         this->cropped = false;
     }
-  
+ 
+    G4VoxelData* GetData() {
+        return this->data;
+    };
+
     G4ThreeVector GetVoxelSize() {
         return G4ThreeVector(spacing[0]/2., spacing[1]/2., spacing[2]/2.);
     };
@@ -180,6 +186,8 @@ class G4VoxelArrayBase {
     };
 
   protected:
+    G4VoxelData* data;
+
     unsigned int length;
     unsigned int ndims;
     
