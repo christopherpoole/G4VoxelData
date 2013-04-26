@@ -205,6 +205,13 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
     };
 
+    G4VoxelArray(std::vector<unsigned int> shape, std::vector<double> spacing) {
+        G4VoxelData* data = new G4VoxelData(shape, spacing, sizeof(T));
+        Init(data);
+        
+        this->array = reinterpret_cast<std::vector<T>*>(data->array);
+    }
+
     ~G4VoxelArray() {};
 
     using G4VoxelArrayBase<T>::GetIndex; 

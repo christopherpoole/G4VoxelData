@@ -81,6 +81,18 @@ class G4VoxelData {
         G4VoxelDataStore<G4VoxelData*>::GetInstance()->Register(this);
     };
 
+    G4VoxelData(std::vector<unsigned int> shape, std::vector<double> spacing, unsigned int size) {
+        this->ndims = shape.size();
+        this->shape = shape;
+        this->spacing = spacing;
+
+        this->length = 1;
+        for (unsigned int i=0; i<this->ndims; i++) this->length *= this->shape[i];
+
+        this->array = new std::vector<char>;
+        this->array->assign(this->length*size, 0);
+    }
+
     ~G4VoxelData() {
         delete array;   
     };
