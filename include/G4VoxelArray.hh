@@ -43,7 +43,7 @@ template <typename T>
 class G4VoxelArrayBase {
   public:
     void Init(G4VoxelData* data) {
-      this->length = data->length;
+        this->length = data->length;
         this->ndims = data->ndims;
         this->shape = data->shape;
         this->spacing = data->spacing;
@@ -215,6 +215,20 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     ~G4VoxelArray() {};
 
     using G4VoxelArrayBase<T>::GetIndex; 
+   
+    virtual void SetValue(T value, unsigned int x, unsigned int y, unsigned int z) {
+        unsigned int index = GetIndex(x, y, z);
+        (*array)[index] = value;
+    }
+
+    virtual void IncrementValue(T value, unsigned int x, unsigned int y, unsigned int z) {
+        unsigned int index = GetIndex(x, y, z);
+        (*array)[index] += value;
+    }
+ 
+    virtual void DecrementValue(T value, unsigned int x, unsigned int y, unsigned int z) {
+        IncrementValue(-value, x, y, z);
+    }
     
     virtual T GetValue(unsigned int x) {
         unsigned int index = GetIndex(x);
