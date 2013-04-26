@@ -64,6 +64,12 @@ class NumpyDataIO : public G4VoxelDataIO {
         
         return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, ROW_MAJOR);
     };
+
+    template <typename T>
+    void Write(G4String filename, G4VoxelData* data) {
+        const unsigned int shape[] = {data->shape[2], data->shape[1], data->shape[0]};
+        cnpy::npy_save("test.npy", reinterpret_cast<T*>(&data->array->front()), shape, data->ndims);
+    };
 };
 
 #endif // NUMPYDATAIO_H
