@@ -37,6 +37,7 @@
 
 // GEANT4 //
 #include "globals.hh"
+#include "G4ThreeVector.hh"
 
 
 template <typename T>
