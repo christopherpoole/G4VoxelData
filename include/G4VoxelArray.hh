@@ -221,6 +221,11 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         return (*array)[index]; 
     };
 
+    virtual T GetValue(unsigned int x, unsigned int y, unsigned int z) {
+        unsigned int index = GetIndex(x, y, z);
+        return GetValue(index);
+    }
+
     T GetRoundedValue(unsigned int x, T rounder)
     {
         T val = GetValue(x);
