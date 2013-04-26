@@ -47,6 +47,7 @@
 // G4VoxelData //
 #include "NumpyDataIO.hh"
 #include "G4VoxelDataParameterisation.hh"
+#include "G4VoxelDetector.hh"
 
 
 DetectorConstruction::DetectorConstruction(G4String filename)
@@ -102,7 +103,17 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     G4RotationMatrix* rot = new G4RotationMatrix;
     rot->rotateZ(90*deg);
     voxeldata_param->Construct(G4ThreeVector(), rot);
-    
+
+    // Setup scoring
+    G4VoxelDetector<double>* scorer = new G4VoxelDetector<double>("detector", array->GetShape(), array->GetSpacing());
+    scorer->SetDebug(true);
+    //reader->Write<double>("scorer.npy", scorer->GetEnergyHistogram()->GetData());
+
+    G4SDManager* sensitive_detector_manager = G4SDManager::GetSDMpointer();
+    sensitive_detector_manager->AddNewDetector(scorer);
+    voxeldata_param->GetLogicalVolume()->SetSensitiveDetector(scorer);
+
+
     return world_physical;
 }
 
