@@ -8,7 +8,7 @@ The library is headers only so no compilation or installation step is required b
 ## Dependencies
 * [GEANT4](http://www.geant4.org/) (only tested with 4.9.6 to date)
 * [GDCM 2.2.1](http://gdcm.sourceforge.net/wiki/index.php/Main_Page) (for DICOM, reading only)
-* [CNPY](https://github.com/rogersce/cnpy) (for NUMPY, reading only)
+* [CNPY](https://github.com/christopherpoole/cnpy) (for NUMPY, reading only)
 
 ## Installation
 G4VoxelData is header only, so installation is fairly optional.
