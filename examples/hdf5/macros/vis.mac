@@ -1,0 +1,14 @@
+/vis/verbose 0
+/vis/open OGLSX 600x600-0+50
+/vis/ogl/set/displayListLimit 1000000
+
+/vis/viewer/set/viewpointThetaPhi 60 30
+/vis/viewer/set/style solid
+
+/vis/drawVolume
+
+/vis/scene/add/trajectories
+/vis/scene/endOfEventAction accumulate
+
+/run/beamOn 100
+
