@@ -31,7 +31,6 @@
 
 // G4VOXELDATA //
 #include "G4VoxelData.hh"
-#include "G4VoxelArray.hh"
 
 // GEANT4 //
 #include "globals.hh"
@@ -43,14 +42,12 @@ class G4VoxelArrayMappedIO {
     ~G4VoxelArrayMappedIO() {};
 
   public:
-    virtual G4VoxelArray* Read(G4String) {
+    virtual void Read(G4String) {
         G4Exception("G4VoxelData::Read", "Reading data not implemented.",
                 FatalException, "");
-
-        return NULL;
     };
 
-    virtual void Write(G4String, G4VoxelArray*) {
+    virtual void Write(G4String) {
         G4Exception("G4VoxelData::Write", "Writing data not implemented.",
                 FatalException, "");
     };
