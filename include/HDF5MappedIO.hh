@@ -77,7 +77,7 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO {
         int data_out[this->buffer_size[0]][this->buffer_size[1]][this->buffer_size[2]];
         dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
 
-        return data_out[][3][3];
+        return data_out[3][3][3];
 
     };
 
