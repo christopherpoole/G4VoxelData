@@ -6,3 +6,4 @@ build/
 examples/dicom/build/
 examples/numpy/build/
 
+core
