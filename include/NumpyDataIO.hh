@@ -69,7 +69,7 @@ class NumpyDataIO : public G4VoxelDataIO {
     void Write(G4String filename, G4VoxelData* data) {
         const unsigned int shape[] = {data->shape[0], data->shape[1], data->shape[2]};
         cnpy::npy_save(filename, reinterpret_cast<T*>(&data->array->front()), shape, data->ndims, "w", "F");
-    };
+    }
 };
 
 #endif // NUMPYDATAIO_H
