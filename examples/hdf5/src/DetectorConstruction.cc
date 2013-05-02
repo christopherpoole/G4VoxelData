@@ -53,7 +53,7 @@ DetectorConstruction::DetectorConstruction(G4String filename)
 {
     this->filename = filename;
     
-    io = new HDF5MappedIO(); 
+    io = new HDF5MappedIO<int>(); 
 }
 
 
@@ -75,7 +75,8 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     world_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
     io->Read(filename.c_str(), "data");
-    io->GetValue(4, 4, 4);
+    G4cout << io->GetValue(0, 0, 0) << G4endl;
+    G4cout << io->GetValue(89, 89, 89) << G4endl;
 
     //std::vector<unsigned int> shape = array->GetShape();
     // Crop if desired, array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);

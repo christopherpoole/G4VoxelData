@@ -59,7 +59,7 @@ class DetectorConstruction : public G4VUserDetectorConstruction
     G4LogicalVolume* world_logical;
     G4VPhysicalVolume* world_physical;
    
-    HDF5MappedIO* io;
+    HDF5MappedIO<int>* io;
     G4VoxelDetector<double>* scorer;
 
     G4String filename;
