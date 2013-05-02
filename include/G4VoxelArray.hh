@@ -208,6 +208,9 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
   public:
     using G4VoxelArrayBase<T>::Init;
 
+    G4VoxelArray() {
+    };
+
     G4VoxelArray(G4VoxelData* data) {
         Init(data);
         
