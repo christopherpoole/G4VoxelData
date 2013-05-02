@@ -39,9 +39,10 @@
 #include "globals.hh"
 
 
-class HDF5MappedIO : public G4VoxelArrayMappedIO {
+template <typename T>
+class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
   public:
-        HDF5MappedIO() {
+        HDF5MappedIO<T>() {
             this->buffer_width = 2;
 
             this->buffer_size[0] = 2*this->buffer_width + 1;
@@ -54,9 +55,19 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO {
         file = H5::H5File(filename.c_str(), H5F_ACC_RDONLY);
         dataset = file.openDataSet(dataset_name.c_str());
         dataspace = dataset.getSpace();
+
+        int ndims_file = dataspace.getSimpleExtentNdims();
+        
+        hsize_t chunk_shape[ndims_file];
+
+        H5::DSetCreatPropList cparms = dataset.getCreatePlist();
+        if (H5D_CHUNKED == cparms.getLayout())  {
+            //int chunk_ndims = cparms.getChunk(32, chunk_shape);
+            int chunk_ndims = cparms.getChunk(32, buffer_size);
+        }
     };
 
-    int GetValue(unsigned int x, unsigned int y, unsigned int z) {    
+    T GetValue(unsigned int x, unsigned int y, unsigned int z) {
         unsigned int ndims = dataspace.getSimpleExtentNdims();
 
         hsize_t      offset[3];   // hyperslab offset in the file
@@ -74,11 +85,10 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO {
         offset_out[2] = 0;
         memspace.selectHyperslab( H5S_SELECT_SET, this->buffer_size, offset_out );
 
-        int data_out[this->buffer_size[0]][this->buffer_size[1]][this->buffer_size[2]];
+        T data_out[this->buffer_size[0]][this->buffer_size[1]][this->buffer_size[2]];
         dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
-
-        return data_out[3][3][3];
-
+        
+        return data_out[x - (x % buffer_size[0])][y - (y % buffer_size[1])][z - (z % buffer_size[2])];
     };
 
     //virtual void Write(G4String, G4MappedVoxelArray*) {
