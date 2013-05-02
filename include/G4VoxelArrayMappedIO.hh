@@ -31,14 +31,16 @@
 
 // G4VOXELDATA //
 #include "G4VoxelData.hh"
+#include "G4VoxelArray.hh"
 
 // GEANT4 //
 #include "globals.hh"
 
 
-class G4VoxelArrayMappedIO {
+template <typename T>
+class G4VoxelArrayMappedIO : public G4VoxelArray<T> {
   public:
-    G4VoxelArrayMappedIO() {};
+    G4VoxelArrayMappedIO<T>() {};
     ~G4VoxelArrayMappedIO() {};
 
   public:
