@@ -43,15 +43,7 @@
 template <typename T>
 class G4VoxelArrayBase {
   public:
-    void Init(G4VoxelData* data) {
-        this->data = data;
-
-        this->length = data->length;
-        this->ndims = data->ndims;
-        this->shape = data->shape;
-        this->spacing = data->spacing;
-        this->order = data->order;
-
+    void Init() {
         this->cropped_shape = this->shape;
 
         // x-direction
@@ -65,8 +57,20 @@ class G4VoxelArrayBase {
         this->crop_limits.push_back(this->shape[2]);
 
         this->cropped = false;
-    }
+    };
  
+    void Init(G4VoxelData* data) {
+        this->data = data;
+
+        this->length = data->length;
+        this->ndims = data->ndims;
+        this->shape = data->shape;
+        this->spacing = data->spacing;
+        this->order = data->order;
+
+        Init();
+    };
+
     G4VoxelData* GetData() {
         return this->data;
     };
@@ -227,7 +231,9 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     ~G4VoxelArray() {};
 
     using G4VoxelArrayBase<T>::GetIndex; 
-   
+  
+    virtual void Read(G4String, G4String) {};
+
     virtual void SetValue(T value, unsigned int x, unsigned int y, unsigned int z) {
         unsigned int index = GetIndex(x, y, z);
         (*array)[index] = value;
