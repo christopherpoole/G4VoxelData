@@ -40,10 +40,13 @@
 
 
 template <typename T>
-class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
+//class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
+class HDF5MappedIO : public G4VoxelArray<T> {
   public:
-        HDF5MappedIO<T>() {
-        };
+    using G4VoxelArray<T>::Init;
+
+   HDF5MappedIO<T>() {
+   };
   
   public:
     void Read(G4String filename, G4String dataset_name) {
@@ -66,6 +69,14 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
             // TODO assign buffer shape if data not chunked
          }
 
+        this->length = 1;
+        for (int i=0; i<this->ndims; i++) this->length *= this->shape[i];
+
+        Init();
+    };
+
+    T GetValue(unsigned int x) {
+        return 128;
     };
 
     T GetValue(unsigned int x, unsigned int y, unsigned int z) {
