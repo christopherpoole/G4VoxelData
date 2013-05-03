@@ -43,11 +43,6 @@ template <typename T>
 class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
   public:
         HDF5MappedIO<T>() {
-            this->buffer_width = 2;
-
-            this->buffer_size[0] = 2*this->buffer_width + 1;
-            this->buffer_size[1] = 2*this->buffer_width + 1;
-            this->buffer_size[2] = 2*this->buffer_width + 1;
         };
   
   public:
@@ -56,40 +51,48 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
         dataset = file.openDataSet(dataset_name.c_str());
         dataspace = dataset.getSpace();
 
-        int ndims_file = dataspace.getSimpleExtentNdims();
+        this->ndims = dataspace.getSimpleExtentNdims();
+        //this->shape = ...;
         
-        hsize_t chunk_shape[ndims_file];
+        H5::DSetCreatPropList header = dataset.getCreatePlist();
+        if (H5D_CHUNKED == header.getLayout())  {
+            hsize_t shape[this->ndims];
+            int chunk_ndims = header.getChunk(32, shape);
+            this->buffer_shape.assign(shape, shape + this->ndims);
+         } else {
+            // TODO assign buffer shape if data not chunked
+         }
 
-        H5::DSetCreatPropList cparms = dataset.getCreatePlist();
-        if (H5D_CHUNKED == cparms.getLayout())  {
-            //int chunk_ndims = cparms.getChunk(32, chunk_shape);
-            int chunk_ndims = cparms.getChunk(32, buffer_size);
-        }
     };
 
     T GetValue(unsigned int x, unsigned int y, unsigned int z) {
-        unsigned int ndims = dataspace.getSimpleExtentNdims();
+        if (this->ndims != 3) {
+            // TODO raise exception if not 3D dataset
+        }
 
-        hsize_t offset[3];   // hyperslab offset in the file
-        offset[0] = (x / this->buffer_width) * this->buffer_width;
-        offset[1] = (y / this->buffer_width) * this->buffer_width;
-        offset[2] = (z / this->buffer_width) * this->buffer_width;
+        hsize_t offset[this->ndims];   // hyperslab offset in the file
+        // Round to nearest buffer shape (only works for unsinged int's)
+        offset[0] = (x / this->buffer_shape[0]) * this->buffer_shape[0];
+        offset[1] = (y / this->buffer_shape[1]) * this->buffer_shape[1];
+        offset[2] = (z / this->buffer_shape[2]) * this->buffer_shape[2];
 
+        // Make a window into the data on disk
+        dataspace.selectHyperslab(H5S_SELECT_SET, &(this->buffer_shape)[0], offset);
 
-        dataspace.selectHyperslab(H5S_SELECT_SET, this->buffer_size, offset);
+        // Make a map to the disk window
+        memspace = H5::DataSpace(3, &(this->buffer_shape)[0]);
 
-        memspace = H5::DataSpace(3, this->buffer_size);
+        // Make a window into the map in memory
+        hsize_t  offset_out[3] = {0, 0, 0};  // hyperslab offset in memory (none)
+        memspace.selectHyperslab( H5S_SELECT_SET, &(this->buffer_shape)[0], offset_out );
 
-        hsize_t      offset_out[3];       // hyperslab offset in memory
-        hsize_t      count_out[3];        // size of the hyperslab in memory
-        offset_out[0] = 0;
-        offset_out[1] = 0;
-        offset_out[2] = 0;
-        memspace.selectHyperslab( H5S_SELECT_SET, this->buffer_size, offset_out );
-
-        T data_out[this->buffer_size[0]][this->buffer_size[1]][this->buffer_size[2]];
+        // Populate memory with the data seen through the disk window. HDF5 should
+        // transparently cache data here? Reads from disk will only happen if required.
+        T data_out[this->buffer_shape[0]][this->buffer_shape[1]][this->buffer_shape[2]];
         dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
         
+        // The value request will be in the memory window minus the offset
+        // applied to the disk window.
         return data_out[x - offset[0]][y - offset[1]][z - offset[2]];
     };
 
@@ -104,8 +107,7 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
     H5::DataSpace dataspace;
     H5::DataSpace memspace;
 
-    int buffer_width;
-    hsize_t buffer_size[3];
+    std::vector<hsize_t> buffer_shape;
 };
 
 #endif // HDF5MAPPEDIO_H
