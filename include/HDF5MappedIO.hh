@@ -70,10 +70,12 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
     T GetValue(unsigned int x, unsigned int y, unsigned int z) {
         unsigned int ndims = dataspace.getSimpleExtentNdims();
 
-        hsize_t      offset[3];   // hyperslab offset in the file
-        offset[0] = x - this->buffer_width;
-        offset[1] = y - this->buffer_width;
-        offset[2] = z - this->buffer_width;
+        hsize_t offset[3];   // hyperslab offset in the file
+        offset[0] = (x / this->buffer_width) * this->buffer_width;
+        offset[1] = (y / this->buffer_width) * this->buffer_width;
+        offset[2] = (z / this->buffer_width) * this->buffer_width;
+
+
         dataspace.selectHyperslab(H5S_SELECT_SET, this->buffer_size, offset);
 
         memspace = H5::DataSpace(3, this->buffer_size);
@@ -88,7 +90,7 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
         T data_out[this->buffer_size[0]][this->buffer_size[1]][this->buffer_size[2]];
         dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
         
-        return data_out[x - (x % buffer_size[0])][y - (y % buffer_size[1])][z - (z % buffer_size[2])];
+        return data_out[x - offset[0]][y - offset[1]][z - offset[2]];
     };
 
     //virtual void Write(G4String, G4MappedVoxelArray*) {

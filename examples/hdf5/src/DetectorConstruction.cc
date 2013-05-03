@@ -76,7 +76,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     io->Read(filename.c_str(), "data");
     G4cout << io->GetValue(0, 0, 0) << G4endl;
-    G4cout << io->GetValue(89, 89, 89) << G4endl;
 
     //std::vector<unsigned int> shape = array->GetShape();
     // Crop if desired, array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
