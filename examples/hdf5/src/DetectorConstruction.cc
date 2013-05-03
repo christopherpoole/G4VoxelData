@@ -53,7 +53,7 @@ DetectorConstruction::DetectorConstruction(G4String filename)
 {
     this->filename = filename;
     
-    io = new HDF5MappedIO<int>(); 
+    disk_array = new HDF5MappedIO<int>(); 
 }
 
 
@@ -74,32 +74,36 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
             "world_physical", 0, false, 0);
     world_logical->SetVisAttributes(G4VisAttributes::Invisible);
 
-    io->Read(filename.c_str(), "data");
-    G4cout << io->GetValue(0, 0, 0) << G4endl;
+    disk_array->Read(filename.c_str(), "data");
 
-    //std::vector<unsigned int> shape = array->GetShape();
+    std::vector<double> spacing;
+    for (int i=0; i<disk_array->GetDimensions(); i++) spacing.push_back(1.);
+    disk_array->SetSpacing(spacing);
+
+    std::vector<unsigned int> shape = disk_array->GetShape();
+
     // Crop if desired, array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
-    //array->Crop(0, shape[0], 0, shape[1], 0, shape[2]);
+    //disk_array->Crop(0, shape[0], 0, shape[1], 0, shape[2]);
 
-    //std::map<uint8_t, G4Material*> materials;
-    //std::map<uint8_t, G4Colour*> colours;
-    //for (int i=0; i<256; i++) {
-    //    materials[i] = water;
-    //
-    //    double gray = (double) i / 255.;
-    //    colours[i] = new G4Colour(gray, gray, gray, 1);
-    //}
+    std::map<int, G4Material*> materials;
+    std::map<int, G4Colour*> colours;
+    for (int i=0; i<256; i++) {
+        materials[i] = water;
+    
+        double gray = (double) i / 255.;
+        colours[i] = new G4Colour(gray, gray, gray, 1);
+    }
     
     // The first template param is for the Array, second is for the map.
-    //G4VoxelDataParameterisation<uint8_t>* voxeldata_param =
-    //    new G4VoxelDataParameterisation<uint8_t>(array, materials,
-    //                                                            world_physical);
+    G4VoxelDataParameterisation<int>* voxeldata_param =
+        new G4VoxelDataParameterisation<int>(disk_array, materials,
+                                                                world_physical);
     
-    //voxeldata_param->SetColourMap(colours);
+    voxeldata_param->SetColourMap(colours);
 
-    //G4RotationMatrix* rot = new G4RotationMatrix;
+    G4RotationMatrix* rot = new G4RotationMatrix;
     //rot->rotateZ(90*deg);
-    //voxeldata_param->Construct(G4ThreeVector(), rot);
+    voxeldata_param->Construct(G4ThreeVector(), rot);
 
     // Setup scoring with bins that are doubles
     //scorer = new G4VoxelDetector<double>("detector", array->GetShape(), array->GetSpacing());

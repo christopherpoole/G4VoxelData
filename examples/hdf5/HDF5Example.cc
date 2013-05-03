@@ -62,8 +62,8 @@ int main(int, char** argv)
     G4UImanager* UI = G4UImanager::GetUIpointer();
 
     G4UIsession* session = new G4UIterminal(new G4UItcsh);
-    //UI->ApplyCommand("/control/execute macros/vis.mac");
-    //session->SessionStart();
+    UI->ApplyCommand("/control/execute macros/vis.mac");
+    session->SessionStart();
 
     delete session;
     delete vis_manager;
