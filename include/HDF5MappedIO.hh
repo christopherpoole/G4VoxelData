@@ -52,7 +52,10 @@ class HDF5MappedIO : public G4VoxelArrayMappedIO<T> {
         dataspace = dataset.getSpace();
 
         this->ndims = dataspace.getSimpleExtentNdims();
-        //this->shape = ...;
+        
+        hsize_t shape[this->ndims];
+        dataspace.getSimpleExtentDims(shape);
+        this->shape.assign(shape, shape + this->ndims);
         
         H5::DSetCreatPropList header = dataset.getCreatePlist();
         if (H5D_CHUNKED == header.getLayout())  {
