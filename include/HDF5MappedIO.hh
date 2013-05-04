@@ -81,13 +81,11 @@ class HDF5MappedIO : public G4VoxelArray<T> {
         unsigned int sub_index = index % (this->shape[0] * this->shape[1]);
         unsigned int y = sub_index / this->shape[0];
         unsigned int x = sub_index % this->shape[0];
-        G4cout << index << G4endl;
+        
         return GetValue(x, y, z);
     };
 
     T GetValue(unsigned int x, unsigned int y, unsigned int z) {
-        G4cout << x << " " << y << " " << z << G4endl;
-
         if (this->ndims != 3) {
             // TODO raise exception if not 3D dataset
         }
