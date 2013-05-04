@@ -45,6 +45,7 @@ class G4VoxelArrayBase {
   public:
     void Init() {
         this->cropped_shape = this->shape;
+        this->order = COLUMN_MAJOR;
 
         // x-direction
         this->crop_limits.push_back(0);
@@ -98,6 +99,7 @@ class G4VoxelArrayBase {
         } else if (this->order == COLUMN_MAJOR) {
             index = z + (this->shape[2] * y) + (this->shape[2] * this->shape[1] * x); 
         }
+
         return index;
     };
 
