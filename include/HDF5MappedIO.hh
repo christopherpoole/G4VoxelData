@@ -66,13 +66,17 @@ class HDF5MappedIO : public G4VoxelArray<T> {
             int chunk_ndims = header.getChunk(32, shape);
             this->buffer_shape.assign(shape, shape + this->ndims);
          } else {
-            // TODO assign buffer shape if data not chunked
+            this->buffer_shape.assign(this->shape.begin(), this->shape.end());
          }
 
         this->length = 1;
         for (int i=0; i<this->ndims; i++) this->length *= this->shape[i];
 
         Init();
+    };
+
+    void SetBufferShape(std::vector<unsigned int> shape) {
+        this->buffer_shape.assign(shape.begin(), shape.end());
     };
 
     T GetValue(unsigned int index) {
