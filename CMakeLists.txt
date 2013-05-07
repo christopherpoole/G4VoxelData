@@ -26,7 +26,7 @@ if (WITH_NUMPY)
 endif()
 
 include_directories(include/)
-file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh ${PROJECT_SOURCE_DIR}/../../include)
+file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
 set(G4VOXELDATA_INCLUDE_DIRECTORY ${CMAKE_INSTALL_PREFIX}/include/G4VoxelData)
 
