@@ -25,6 +25,14 @@ if (WITH_NUMPY)
     set(G4VOXELDATA_NUMPY_LIBRARIES cnpy)
 endif()
 
+# HDF5
+set(G4VOXELDATA_HDF5_LIBRARIES)
+set(G4VOXELDATA_HDF5_USE_FILE)
+option(WITH_HDF5 "Find HDF5 for loading memroy mapped arrays" ON)
+if (WITH_HDF5)
+    set(G4VOXELDATA_HDF5_LIBRARIES hdf5 hdf5_cpp)
+endif()
+
 include_directories(include/)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
