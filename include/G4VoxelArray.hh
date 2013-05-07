@@ -235,6 +235,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     using G4VoxelArrayBase<T>::GetIndex; 
   
     virtual void Read(G4String, G4String) {};
+    virtual void Write(G4String, G4String) {};
 
     virtual void SetValue(T value, unsigned int x, unsigned int y, unsigned int z) {
         unsigned int index = GetIndex(x, y, z);
