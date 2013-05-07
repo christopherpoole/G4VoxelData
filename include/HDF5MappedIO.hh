@@ -30,7 +30,7 @@
 #define HDF5MAPPEDIO_H
 
 // G4VOXELDATA //
-#include "G4VoxelArrayMappedIO.hh"
+#include "G4VoxelArray.hh"
 
 // HDF5 //
 #include "H5Cpp.h"
