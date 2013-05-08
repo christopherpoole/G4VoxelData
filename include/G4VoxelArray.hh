@@ -62,14 +62,14 @@ class G4VoxelArrayBase {
  
     void Init(G4VoxelData* data) {
         this->data = data;
-
-        this->length = data->length;
-        this->ndims = data->ndims;
         this->shape = data->shape;
-        this->spacing = data->spacing;
-        this->order = data->order;
 
         Init();
+        
+        this->length = data->length;
+        this->ndims = data->ndims;
+        this->spacing = data->spacing;
+        this->order = data->order;
     };
 
     G4VoxelData* GetData() {
