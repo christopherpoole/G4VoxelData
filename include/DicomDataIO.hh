@@ -239,6 +239,11 @@ class DicomDataIO : public G4VoxelDataIO {
         std::vector<char>* buffer =
             new std::vector<char>(buffer_out, buffer_out + buffer_length);
 
+        // Clean up buffers
+        delete reader;
+        delete buffer_in;
+        delete buffer_out;
+
         return new G4VoxelData(buffer, buffer_length/sizeof(int16_t), ndims, shape, spacing, origin, INT16);
     };
   
