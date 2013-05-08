@@ -179,6 +179,8 @@ class DicomDataIO : public G4VoxelDataIO {
         voxel_data->origin[2] = first_position
                               + (last_position - first_position)/2;
 
+        voxel_data->order = ROW_MAJOR;
+
         return voxel_data;
     };
 
