@@ -89,6 +89,36 @@ class HDF5MappedIO : public G4VoxelArray<T> {
         return GetValue(x, y, z);
     };
 
+    T GetValue(unsigned int x, unsigned int y) {
+        if (this->ndims != 2) {
+            // TODO raise exception if not 2D dataset
+        }
+
+        hsize_t offset[this->ndims];   // hyperslab offset in the file
+        // Round to nearest buffer shape (only works for unsinged int's)
+        offset[0] = (x / this->buffer_shape[0]) * this->buffer_shape[0];
+        offset[1] = (y / this->buffer_shape[1]) * this->buffer_shape[1];
+
+        // Make a window into the data on disk
+        dataspace.selectHyperslab(H5S_SELECT_SET, &(this->buffer_shape)[0], offset);
+
+        // Make a map to the disk window
+        memspace = H5::DataSpace(2, &(this->buffer_shape)[0]);
+
+        // Make a window into the map in memory
+        hsize_t  offset_out[2] = {0, 0};  // hyperslab offset in memory (none)
+        memspace.selectHyperslab( H5S_SELECT_SET, &(this->buffer_shape)[0], offset_out );
+
+        // Populate memory with the data seen through the disk window. HDF5 should
+        // transparently cache data here? Reads from disk will only happen if required.
+        T data_out[this->buffer_shape[0]][this->buffer_shape[1]];
+        dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
+        
+        // The value request will be in the memory window minus the offset
+        // applied to the disk window.
+        return data_out[x - offset[0]][y - offset[1]];
+    };
+
     T GetValue(unsigned int x, unsigned int y, unsigned int z) {
         if (this->ndims != 3) {
             // TODO raise exception if not 3D dataset
