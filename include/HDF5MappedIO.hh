@@ -44,7 +44,8 @@ template <typename T>
 class HDF5MappedIO : public G4VoxelArray<T> {
   public:
     using G4VoxelArray<T>::Init;
-
+    using G4VoxelArray<T>::GetIndex;
+    
    HDF5MappedIO<T>() {
    };
   
@@ -89,74 +90,78 @@ class HDF5MappedIO : public G4VoxelArray<T> {
         unsigned int sub_index = index % (this->shape[0] * this->shape[1]);
         unsigned int y = sub_index / this->shape[0];
         unsigned int x = sub_index % this->shape[0];
-        
-        return GetValue(x, y, z);
+    
+        std::vector<unsigned int> indices;
+        indices.push_back(x);
+        indices.push_back(y);
+        indices.push_back(z);
+
+        return GetValue(indices);
     };
 
-    T GetValue(unsigned int x, unsigned int y) {
-        if (this->ndims != 2) {
-            // TODO raise exception if not 2D dataset
-        }
-
-        hsize_t offset[this->ndims];   // hyperslab offset in the file
+    T GetValue(std::vector<unsigned int> indices) {
+        hsize_t offset[indices.size()];   // hyperslab offset in the file
+        hsize_t offset_out[indices.size()];
         // Round to nearest buffer shape (only works for unsinged int's)
-        offset[0] = (x / this->buffer_shape[0]) * this->buffer_shape[0];
-        offset[1] = (y / this->buffer_shape[1]) * this->buffer_shape[1];
+        for (unsigned int i=0; i<indices.size(); i++) {
+            offset[i] = (indices[i] / this->buffer_shape[i]) * this->buffer_shape[i];
+            offset_out[i] = 0;
+        }
 
         // Make a window into the data on disk
         dataspace.selectHyperslab(H5S_SELECT_SET, &(this->buffer_shape)[0], offset);
 
         // Make a map to the disk window
-        memspace = H5::DataSpace(2, &(this->buffer_shape)[0]);
+        memspace = H5::DataSpace(indices.size(), &(this->buffer_shape)[0]);
 
         // Make a window into the map in memory
-        hsize_t  offset_out[2] = {0, 0};  // hyperslab offset in memory (none)
         memspace.selectHyperslab( H5S_SELECT_SET, &(this->buffer_shape)[0], offset_out );
 
         // Populate memory with the data seen through the disk window. HDF5 should
         // transparently cache data here? Reads from disk will only happen if required.
-        T data_out[this->buffer_shape[0]][this->buffer_shape[1]];
-        dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
+        unsigned int length = 1;
+        for (unsigned int i=0; i<this->buffer_shape.size(); i++) {
+            length *= this->buffer_shape[i];
+        }
+
+        T data_out[length];
+        dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace);
         
         // The value request will be in the memory window minus the offset
         // applied to the disk window.
-        return data_out[x - offset[0]][y - offset[1]];
+        std::vector<unsigned int> shape;
+        std::vector<unsigned int> offset_indices;
+
+        for (unsigned int i=0; i<buffer_shape.size(); i++) {
+            shape.push_back(this->buffer_shape[i]);
+            offset_indices.push_back(indices[i] - offset[i]);
+        }
+        
+        unsigned int index = GetIndex(offset_indices, shape);
+        return data_out[index];
+    };
+
+    T GetValue(unsigned int x, unsigned int y) {
+        if (this->ndims != 2) {
+            // TODO raise exception if not 3D dataset
+        }
+        std::vector<unsigned int> indices;
+        indices.push_back(x);
+        indices.push_back(y);
+
+        return GetValue(indices);
     };
 
     T GetValue(unsigned int x, unsigned int y, unsigned int z) {
         if (this->ndims != 3) {
             // TODO raise exception if not 3D dataset
         }
+        std::vector<unsigned int> indices;
+        indices.push_back(x);
+        indices.push_back(y);
+        indices.push_back(z);
 
-        hsize_t offset[this->ndims];   // hyperslab offset in the file
-        // Round to nearest buffer shape (only works for unsinged int's)
-        offset[0] = (x / this->buffer_shape[0]) * this->buffer_shape[0];
-        offset[1] = (y / this->buffer_shape[1]) * this->buffer_shape[1];
-        offset[2] = (z / this->buffer_shape[2]) * this->buffer_shape[2];
-
-        // Make a window into the data on disk
-        dataspace.selectHyperslab(H5S_SELECT_SET, &(this->buffer_shape)[0], offset);
-
-        // Make a map to the disk window
-        memspace = H5::DataSpace(3, &(this->buffer_shape)[0]);
-
-        // Make a window into the map in memory
-        hsize_t  offset_out[3] = {0, 0, 0};  // hyperslab offset in memory (none)
-        memspace.selectHyperslab( H5S_SELECT_SET, &(this->buffer_shape)[0], offset_out );
-
-        // Populate memory with the data seen through the disk window. HDF5 should
-        // transparently cache data here? Reads from disk will only happen if required.
-        T data_out[this->buffer_shape[0] * this->buffer_shape[1] * this->buffer_shape[2]];
-        dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
-        
-        // The value request will be in the memory window minus the offset
-        // applied to the disk window.
-        std::vector<unsigned int> shape;
-        shape.assign(buffer_shape.begin(), buffer_shape.end());
-
-        unsigned int index = GetIndex(x - offset[0], y - offset[1], z - offset[2],
-                shape);
-        return data_out[index];
+        return GetValue(indices);
     };
 
     //virtual void Write(G4String, G4MappedVoxelArray*) {
