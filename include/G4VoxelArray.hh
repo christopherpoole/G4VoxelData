@@ -91,16 +91,21 @@ class G4VoxelArrayBase {
         return index;
     };
 
-    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z) {
+    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z,
+            std::vector<unsigned int> shape) {
         unsigned int index;
         
         if (this->order == ROW_MAJOR) {
-            index = x + (this->shape[0] * y) + (this->shape[0] * this->shape[1] * z); 
+            index = x + (shape[0] * y) + (shape[0] * shape[1] * z); 
         } else if (this->order == COLUMN_MAJOR) {
-            index = z + (this->shape[2] * y) + (this->shape[2] * this->shape[1] * x); 
+            index = z + (shape[2] * y) + (shape[2] * shape[1] * x); 
         }
 
         return index;
+    };
+
+    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z) {
+        return GetIndex(x, y, z, this->shape);
     };
 
     void CropAxis(unsigned int imin, unsigned int imax, unsigned int axis) {
