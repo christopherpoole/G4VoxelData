@@ -1,6 +1,8 @@
 *.bak
 *.swp
 *.dcm
+*.npy
+*.hdf5
 
 build/
 examples/dicom/build/
