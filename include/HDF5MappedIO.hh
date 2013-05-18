@@ -63,6 +63,8 @@ class HDF5MappedIO : public G4VoxelArray<T> {
         H5::DSetCreatPropList header = dataset.getCreatePlist();
         if (H5D_CHUNKED == header.getLayout())  {
             hsize_t* chunk_shape = new hsize_t[this->ndims];
+            header.getChunk(this->ndims, chunk_shape);    
+
             this->buffer_shape.assign(chunk_shape, chunk_shape + this->ndims);
             delete [] chunk_shape;
          } else {
