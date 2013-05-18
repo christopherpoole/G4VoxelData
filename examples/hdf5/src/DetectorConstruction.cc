@@ -77,7 +77,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     disk_array->Read(filename.c_str(), "data");
 
     std::vector<double> spacing;
-    for (int i=0; i<disk_array->GetDimensions(); i++) spacing.push_back(1.);
+    for (unsigned int i=0; i<disk_array->GetDimensions(); i++) spacing.push_back(1.);
     disk_array->SetSpacing(spacing);
 
     std::vector<unsigned int> shape = disk_array->GetShape();
