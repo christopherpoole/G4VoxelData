@@ -146,12 +146,17 @@ class HDF5MappedIO : public G4VoxelArray<T> {
 
         // Populate memory with the data seen through the disk window. HDF5 should
         // transparently cache data here? Reads from disk will only happen if required.
-        T data_out[this->buffer_shape[0]][this->buffer_shape[1]][this->buffer_shape[2]];
+        T data_out[this->buffer_shape[0] * this->buffer_shape[1] * this->buffer_shape[2]];
         dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace );
         
         // The value request will be in the memory window minus the offset
         // applied to the disk window.
-        return data_out[x - offset[0]][y - offset[1]][z - offset[2]];
+        std::vector<unsigned int> shape;
+        shape.assign(buffer_shape.begin(), buffer_shape.end());
+
+        unsigned int index = GetIndex(x - offset[0], y - offset[1], z - offset[2],
+                shape);
+        return data_out[index];
     };
 
     //virtual void Write(G4String, G4MappedVoxelArray*) {
