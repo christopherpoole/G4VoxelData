@@ -91,17 +91,48 @@ class G4VoxelArrayBase {
         return index;
     };
 
-    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z,
+    unsigned int GetIndex(std::vector<unsigned int> indices,
             std::vector<unsigned int> shape) {
         unsigned int index;
-        
-        if (this->order == ROW_MAJOR) {
-            index = x + (shape[0] * y) + (shape[0] * shape[1] * z); 
-        } else if (this->order == COLUMN_MAJOR) {
-            index = z + (shape[2] * y) + (shape[2] * shape[1] * x); 
-        }
 
+        if (this->order == ROW_MAJOR) {
+            /* index = x + (shape[0] * y) + (shape[0] * shape[1] * z) */
+            
+            index = indices.front();
+            for (unsigned int i=1; i<indices.size()-1; i++) {
+                unsigned int offset = indices[i];
+                for (unsigned int j=0; j<i; j++) {
+                    offset *= shape[j];
+                }
+                index += offset;
+            }
+        } else if (this->order == COLUMN_MAJOR) {
+            /* index = z + (shape[2] * y) + (shape[2] * shape[1] * x) */
+
+            index = indices.back();
+            for (unsigned int i=indices.size()-2; i>=0 && i<indices.size(); i--) {
+                unsigned int offset = indices[i];
+                for (unsigned int j=indices.size()-1; j>=i+1 && j<indices.size(); j--) {
+                    offset *= shape[j];
+                }
+               index += offset; 
+            }
+        }
         return index;
+    };
+
+    unsigned int GetIndex(std::vector<unsigned int> indices) {
+        return GetIndex(indices, this->shape);
+    };
+    
+    unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z,
+            std::vector<unsigned int> shape) {
+        std::vector<unsigned int> indices;
+        indices.push_back(x);
+        indices.push_back(y);
+        indices.push_back(z);
+
+        return GetIndex(indices, shape);
     };
 
     unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z) {
