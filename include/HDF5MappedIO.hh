@@ -56,21 +56,23 @@ class HDF5MappedIO : public G4VoxelArray<T> {
 
         this->ndims = dataspace.getSimpleExtentNdims();
         
-        hsize_t shape[this->ndims];
+        hsize_t* shape = new hsize_t[this->ndims];
         dataspace.getSimpleExtentDims(shape);
         this->shape.assign(shape, shape + this->ndims);
-        
+       
         H5::DSetCreatPropList header = dataset.getCreatePlist();
         if (H5D_CHUNKED == header.getLayout())  {
-            hsize_t shape[this->ndims];
-            int chunk_ndims = header.getChunk(32, shape);
-            this->buffer_shape.assign(shape, shape + this->ndims);
+            hsize_t* chunk_shape = new hsize_t[this->ndims];
+            this->buffer_shape.assign(chunk_shape, chunk_shape + this->ndims);
+            delete [] chunk_shape;
          } else {
             this->buffer_shape.assign(this->shape.begin(), this->shape.end());
          }
 
         this->length = 1;
-        for (int i=0; i<this->ndims; i++) this->length *= this->shape[i];
+        for (unsigned int i=0; i<this->ndims; i++) this->length *= this->shape[i];
+
+        delete [] shape;
 
         Init();
     };
