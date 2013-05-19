@@ -51,7 +51,7 @@ class DetectorConstruction;
 template <typename T>
 class G4VoxelDetector : public G4VSensitiveDetector {
   public:
-    G4VoxelDetector(char* name, std::vector<unsigned int> shape,
+    G4VoxelDetector(G4String name, std::vector<unsigned int> shape,
             std::vector<double> spacing) : G4VSensitiveDetector(name) {
         debug = false;
 
