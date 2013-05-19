@@ -100,8 +100,8 @@ class HDF5MappedIO : public G4VoxelArray<T> {
     };
 
     T GetValue(std::vector<unsigned int> indices) {
-        hsize_t offset[indices.size()];   // hyperslab offset in the file
-        hsize_t offset_out[indices.size()];
+        hsize_t* offset = new hsize_t[indices.size()];   // hyperslab offset in the file
+        hsize_t* offset_out = new hsize_t[indices.size()];
         // Round to nearest buffer shape (only works for unsinged int's)
         for (unsigned int i=0; i<indices.size(); i++) {
             offset[i] = (indices[i] / this->buffer_shape[i]) * this->buffer_shape[i];
@@ -124,7 +124,7 @@ class HDF5MappedIO : public G4VoxelArray<T> {
             length *= this->buffer_shape[i];
         }
 
-        T data_out[length];
+        T* data_out = new T[length];
         dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace);
         
         // The value request will be in the memory window minus the offset
@@ -138,7 +138,13 @@ class HDF5MappedIO : public G4VoxelArray<T> {
         }
         
         unsigned int index = GetIndex(offset_indices, shape);
-        return data_out[index];
+        T value = data_out[index];
+        
+        delete [] offset;
+        delete [] offset_out;
+        delete [] data_out;
+        
+        return value;
     };
 
     T GetValue(unsigned int x, unsigned int y) {
