@@ -110,7 +110,7 @@ class G4VoxelArrayBase {
             /* index = z + (shape[2] * y) + (shape[2] * shape[1] * x) */
 
             index = indices.back();
-            for (unsigned int i=indices.size()-2; i>=0 && i<indices.size(); i--) {
+            for (unsigned int i=indices.size()-2; i<indices.size(); i--) {
                 unsigned int offset = indices[i];
                 for (unsigned int j=indices.size()-1; j>=i+1 && j<indices.size(); j--) {
                     offset *= shape[j];
