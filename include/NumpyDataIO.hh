@@ -53,7 +53,7 @@ class NumpyDataIO : public G4VoxelDataIO {
         std::vector<unsigned int> shape = array.shape;
 
         unsigned int size = 1;
-        for (int i=0; i<ndims; i++) size *= shape[i]; 
+        for (unsigned int i=0; i<ndims; i++) size *= shape[i]; 
 
         std::vector<double> spacing(ndims);
         std::fill(spacing.begin(), spacing.end(), 1);
