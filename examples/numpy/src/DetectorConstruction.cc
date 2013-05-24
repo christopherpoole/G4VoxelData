@@ -115,7 +115,6 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 }
 
 void DetectorConstruction::WriteHistograms() {
-    G4cout << "writing" << G4endl;
     io->Write<double>("energy_histogram.npy", scorer->GetEnergyHistogram()->GetData());
     io->Write<double>("energysq_histogram.npy", scorer->GetEnergyHistogram()->GetData());
     io->Write<double>("counts_histogram.npy", scorer->GetEnergyHistogram()->GetData());
