@@ -45,6 +45,7 @@ class HDF5MappedIO : public G4VoxelArray<T> {
   public:
     using G4VoxelArray<T>::Init;
     using G4VoxelArray<T>::GetIndex;
+    using G4VoxelArray<T>::UnpackIndices;
     
    HDF5MappedIO<T>() {
    };
@@ -85,18 +86,7 @@ class HDF5MappedIO : public G4VoxelArray<T> {
     };
 
     T GetValue(unsigned int index) {
-        unsigned int z = index / (this->shape[0] * this->shape[1]);
-
-        unsigned int sub_index = index % (this->shape[0] * this->shape[1]);
-        unsigned int y = sub_index / this->shape[0];
-        unsigned int x = sub_index % this->shape[0];
-    
-        std::vector<unsigned int> indices;
-        indices.push_back(x);
-        indices.push_back(y);
-        indices.push_back(z);
-
-        return GetValue(indices);
+        return GetValue(UnpackIndices(index));
     };
 
     T GetValue(std::vector<unsigned int> indices) {

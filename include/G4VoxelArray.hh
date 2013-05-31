@@ -152,6 +152,21 @@ class G4VoxelArrayBase {
         return GetIndex(x, y, z, this->shape);
     };
 
+    std::vector<unsigned int> UnpackIndices(unsigned int index) {
+        unsigned int z = index / (this->shape[0] * this->shape[1]);
+
+        unsigned int sub_index = index % (this->shape[0] * this->shape[1]);
+        unsigned int y = sub_index / this->shape[0];
+        unsigned int x = sub_index % this->shape[0];
+    
+        std::vector<unsigned int> indices;
+        indices.push_back(x);
+        indices.push_back(y);
+        indices.push_back(z);
+
+        return indices;
+    };
+
     void CropAxis(unsigned int imin, unsigned int imax, unsigned int axis) {
         cropped_shape[axis] = imax - imin;
 
