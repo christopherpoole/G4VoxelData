@@ -161,7 +161,13 @@ public:
             offset_y = array->GetCropLimit()[2];
             offset_z = array->GetCropLimit()[4];
         }
-        
+
+        if (array->IsMerged()) {
+            offset_x += x * array->GetMergeSize()[0];
+            offset_y += y * array->GetMergeSize()[1];
+            offset_z += z * array->GetMergeSize()[2];
+        }
+
         int index = array->GetIndex(x + offset_x, y + offset_y, z + offset_z); 
         G4Material* VoxelMaterial = GetMaterial(index);
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
