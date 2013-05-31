@@ -93,7 +93,7 @@ class G4VoxelArrayBase {
         return G4ThreeVector(spacing[0]/2., spacing[1]/2., spacing[2]/2.);
     };
 
-    G4ThreeVector GetShape() {
+    G4ThreeVector GetVolumeShape() {
         if (this->merged) {
             return G4ThreeVector(merged_shape[0], merged_shape[1], merged_shape[2]);
         }
@@ -268,6 +268,13 @@ class G4VoxelArrayBase {
     }
 
     std::vector<double> GetSpacing() {
+        if (this->merged) {
+            std::vector<double> spacing;
+            for (unsigned int i=0; i<this->ndims; i++) {
+                spacing.push_back(this->spacing[i] * this->merge_size[i]);
+            }
+            return spacing;
+        }
         return this->spacing;
     };
 
