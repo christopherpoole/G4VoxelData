@@ -271,7 +271,7 @@ class G4VoxelArrayBase {
         merged = false;
     };
 
-    std::vector<float> GetMergeSize() {
+    std::vector<unsigned int> GetMergeSize() {
         return this->merge_size;
     };
 
