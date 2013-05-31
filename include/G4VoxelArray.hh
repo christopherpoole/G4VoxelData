@@ -84,6 +84,12 @@ class G4VoxelArrayBase {
     };
 
     G4ThreeVector GetVoxelSize() {
+        if (this->merged) {
+            return G4ThreeVector(merge_size[0]*spacing[0]/2.,
+                                 merge_size[1]*spacing[1]/2.,
+                                 merge_size[2]*spacing[2]/2.);
+        }
+
         return G4ThreeVector(spacing[0]/2., spacing[1]/2., spacing[2]/2.);
     };
 
