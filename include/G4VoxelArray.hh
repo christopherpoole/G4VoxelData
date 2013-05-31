@@ -58,6 +58,11 @@ class G4VoxelArrayBase {
         this->crop_limits.push_back(this->shape[2]);
 
         this->cropped = false;
+
+        this->merged_shape = this->shape;
+        this->merge_size.push_back(1);  // x-direction
+        this->merge_size.push_back(1);  // y-direction
+        this->merge_size.push_back(1);  // z-direction
     };
  
     void Init(G4VoxelData* data) {
@@ -188,6 +193,29 @@ class G4VoxelArrayBase {
         return this->crop_limits;
     }; 
 
+    void MergeX(unsigned int size) {
+
+    };
+
+    void MergeY(unsigned int size) {
+
+    };
+
+    void MergeZ(unsigned int size) {
+
+    };
+
+    void Merge(unsigned int size_x, unsigned int size_y,
+               unsigned int size_z) {
+        MergeX(size_x);
+        MergeY(size_y);
+        MergeZ(size_z);
+    }
+
+    bool IsMerged() {
+        return this->merged;
+    }
+
     unsigned int GetLength() {
         return this->length;
     };
@@ -242,6 +270,10 @@ class G4VoxelArrayBase {
     bool cropped;
     std::vector<unsigned int> crop_limits;
     std::vector<unsigned int> cropped_shape;
+
+    bool merged;
+    std::vector<unsigned int> merge_size;
+    std::vector<unsigned int> merged_shape;
 };
 
 
