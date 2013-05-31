@@ -94,6 +94,9 @@ class G4VoxelArrayBase {
     };
 
     G4ThreeVector GetVolumeShape() {
+        if (this->merged) {
+            return G4ThreeVector(merged_shape[0], merged_shape[1], merged_shape[2]);
+        }
         return G4ThreeVector(cropped_shape[0], cropped_shape[1], cropped_shape[2]);
     };
 
