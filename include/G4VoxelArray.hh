@@ -153,12 +153,24 @@ class G4VoxelArrayBase {
     };
 
     std::vector<unsigned int> UnpackIndices(unsigned int index) {
-        unsigned int z = index / (this->shape[0] * this->shape[1]);
+        unsigned int x, y, z, sub_index;
 
-        unsigned int sub_index = index % (this->shape[0] * this->shape[1]);
-        unsigned int y = sub_index / this->shape[0];
-        unsigned int x = sub_index % this->shape[0];
-    
+        if (this->order == ROW_MAJOR) {
+            /* index = x + (shape[0] * y) + (shape[0] * shape[1] * z) */
+            x = index / (this->shape[1] * this->shape[2]);
+
+            sub_index = index % (this->shape[1] * this->shape[2]);
+            y = sub_index / this->shape[1];
+            z = sub_index % this->shape[1];
+        } else if (this->order == COLUMN_MAJOR) {
+            /* index = z + (shape[2] * y) + (shape[2] * shape[1] * x) */
+            z = index / (this->shape[0] * this->shape[1]);
+
+            sub_index = index % (this->shape[0] * this->shape[1]);
+            y = sub_index / this->shape[0];
+            x = sub_index % this->shape[0];
+        }
+
         std::vector<unsigned int> indices;
         indices.push_back(x);
         indices.push_back(y);
