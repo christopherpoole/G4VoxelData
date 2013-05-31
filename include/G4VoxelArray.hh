@@ -94,10 +94,7 @@ class G4VoxelArrayBase {
     };
 
     G4ThreeVector GetVolumeShape() {
-        if (this->cropped) {
-            return G4ThreeVector(cropped_shape[0], cropped_shape[1], cropped_shape[2]);
-        }
-        return G4ThreeVector(shape[0], shape[1], shape[2]);
+        return G4ThreeVector(cropped_shape[0], cropped_shape[1], cropped_shape[2]);
     };
 
     unsigned int GetIndex(unsigned int index) {
