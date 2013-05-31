@@ -93,7 +93,7 @@ class G4VoxelArrayBase {
         return G4ThreeVector(spacing[0]/2., spacing[1]/2., spacing[2]/2.);
     };
 
-    G4ThreeVector GetVolumeShape() {
+    G4ThreeVector GetShape() {
         if (this->merged) {
             return G4ThreeVector(merged_shape[0], merged_shape[1], merged_shape[2]);
         }
@@ -257,10 +257,10 @@ class G4VoxelArrayBase {
     };
 
     std::vector<unsigned int> GetShape() {
-        if (this->cropped) {
-            return this->cropped_shape; 
+        if (this->merged) {
+            return this->merged_shape; 
         }
-        return this->shape;
+        return this->cropped_shape;
     };
 
     void SetShape(std::vector<unsigned int> shape) {
