@@ -393,12 +393,9 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     virtual T GetValue(unsigned int x, unsigned int y, unsigned int z) {
         unsigned int index = GetIndex(x, y, z);
         return GetValue(index);
-    }
+    };
 
-    T GetRoundedValue(unsigned int x, T rounder)
-    {
-        T val = GetValue(x);
-
+    T RoundValue(T val, T rounder) {
         if (val < 0) {
             val = floor((val - rounder/2)/rounder)*rounder;
         } else {
@@ -406,6 +403,12 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         }
 
         return val;
+    };
+
+    T GetRoundedValue(unsigned int x, T rounder)
+    {
+        T val = GetValue(x);
+        return RoundValue(val, rounder);
     };
     
     T GetRoundedValue(unsigned int x, T lower, T upper, T rounder)
