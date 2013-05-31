@@ -63,6 +63,8 @@ class G4VoxelArrayBase {
         this->merge_size.push_back(1);  // x-direction
         this->merge_size.push_back(1);  // y-direction
         this->merge_size.push_back(1);  // z-direction
+
+        this->merged = false;
     };
  
     void Init(G4VoxelData* data) {
