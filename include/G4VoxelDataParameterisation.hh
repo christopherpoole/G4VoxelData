@@ -163,9 +163,9 @@ public:
         }
 
         if (array->IsMerged()) {
-            offset_x += x * array->GetMergeSize()[0];
-            offset_y += y * array->GetMergeSize()[1];
-            offset_z += z * array->GetMergeSize()[2];
+            x = x * array->GetMergeSize()[0];
+            y = y * array->GetMergeSize()[1];
+            z = z * array->GetMergeSize()[2];
         }
 
         int index = array->GetIndex(x + offset_x, y + offset_y, z + offset_z); 
@@ -198,12 +198,26 @@ public:
     G4Material* GetMaterial(G4int i) const
     {
         U value;
-        if (round_values && trim_values) {
-            value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
-        } else if (round_values && !trim_values) {
-            value = array->GetRoundedValue(i, rounder); 
+        
+        if (array->IsMerged()) {
+            double val = 0;
+            unsigned int count = 0;
+            for (unsigned int axis=0; axis<array->GetDimensions(); axis++) {
+                for (unsigned int offset=0; offset<array->GetMergeSize()[axis]; offset++) {
+                    val += array->GetValue(i + offset);
+                    count += 1;
+                }
+            }
+            //value = array->RoundValue((U) val/count, rounder); 
+            value = val/count;
         } else {
-            value = array->GetValue(i);
+            if (round_values && trim_values) {
+                value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
+            } else if (round_values && !trim_values) {
+                value = array->GetRoundedValue(i, rounder); 
+            } else {
+                value = array->GetValue(i);
+            }
         }
 
         return materials_map.at(value);
