@@ -171,7 +171,7 @@ class G4VoxelArrayBase {
         CropX(xmin, xmax);
         CropY(ymin, ymax);
         CropZ(zmin, zmax);
-    }
+    };
 
     void Crop(bool cropped) {
        this->cropped = cropped; 
@@ -179,7 +179,7 @@ class G4VoxelArrayBase {
 
     bool IsCropped() {
         return this->cropped;
-    }
+    };
 
     void ClearCrop() {
         CropX(0, shape[0]); 
@@ -187,22 +187,34 @@ class G4VoxelArrayBase {
         CropZ(0, shape[2]); 
         
         cropped = false;
-    }
+    };
     
     std::vector<unsigned int> GetCropLimit() {
         return this->crop_limits;
     }; 
 
-    void MergeX(unsigned int size) {
+    void MergeAxis(unsigned int size, unsigned int axis) {
+        if (GetShape()[axis] % size != 0) {
 
+        }
+
+        merged_shape[axis] = GetShape()[axis] / size;
+        merge_size[axis] = size;
+
+        merged = true;
+    };
+
+    void MergeX(unsigned int size) {
+        MergeAxis(size, 0); 
     };
 
     void MergeY(unsigned int size) {
+        MergeAxis(size, 1); 
 
     };
 
     void MergeZ(unsigned int size) {
-
+        MergeAxis(size, 2); 
     };
 
     void Merge(unsigned int size_x, unsigned int size_y,
@@ -210,11 +222,19 @@ class G4VoxelArrayBase {
         MergeX(size_x);
         MergeY(size_y);
         MergeZ(size_z);
-    }
+    };
 
     bool IsMerged() {
         return this->merged;
-    }
+    };
+
+    void ClearMerge() {
+        MergeX(1); 
+        MergeY(1); 
+        MergeZ(1); 
+
+        merged = false;
+    };
 
     unsigned int GetLength() {
         return this->length;
