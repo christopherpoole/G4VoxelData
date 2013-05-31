@@ -194,11 +194,11 @@ class G4VoxelArrayBase {
     }; 
 
     void MergeAxis(unsigned int size, unsigned int axis) {
-        if (GetShape()[axis] % size != 0) {
+        if (cropped_shape[axis] % size != 0) {
 
         }
 
-        merged_shape[axis] = GetShape()[axis] / size;
+        merged_shape[axis] = cropped_shape[axis] / size;
         merge_size[axis] = size;
 
         merged = true;
