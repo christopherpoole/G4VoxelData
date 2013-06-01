@@ -198,18 +198,23 @@ public:
     G4Material* GetMaterial(G4int i) const
     {
         U value;
-        
+        std::vector<unsigned int> indices = array->UnpackIndices(i);
+
         if (array->IsMerged()) {
             double val = 0;
             unsigned int count = 0;
             for (unsigned int axis=0; axis<array->GetDimensions(); axis++) {
                 for (unsigned int offset=0; offset<array->GetMergeSize()[axis]; offset++) {
-                    val += array->GetValue(i + offset);
+                    indices[axis] += offset;
+                    val += array->GetValue(array->GetIndex(indices));
                     count += 1;
                 }
             }
             //value = array->RoundValue((U) val/count, rounder); 
-            value = val/count;
+            value = array->RoundValue(val/(count-1), rounder);
+            if (value < lower_bound) value = lower_bound;
+            if (value > upper_bound) value = upper_bound;
+    
         } else {
             if (round_values && trim_values) {
                 value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
