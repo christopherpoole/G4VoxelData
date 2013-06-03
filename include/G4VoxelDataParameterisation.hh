@@ -225,29 +225,29 @@ public:
             indices.push_back(z);
 
             double val = 0;
-            unsigned int count = 0;
+            unsigned int merged_voxels = 1;
             for (unsigned int axis=0; axis<array->GetDimensions(); axis++) {
                 unsigned int stride = array->GetMergeSize()[axis];
+                merged_voxels *= stride;
 
                 if (stride == 1) {
                     // Not actually merging voxels in this direction
                     continue;
                 }
 
-                for (unsigned int offset=1; offset<stride; offset++) {
+                for (unsigned int offset=0; offset<stride; offset++) {
                     indices[axis] += offset;
                     val += array->GetValue(array->GetIndex(indices));
-                    count += 1;
                 }
             }
 
-            if (count > 0) {   
-                val = (U) val/count;
+            if (merged_voxels > 1) {   
+                val = (U) val/merged_voxels;
 
                 if (rounder && !(lower_bound && upper_bound)) {
-                    val = array->RoundValue(val/count, rounder);
+                    val = array->RoundValue(val, rounder);
                 } else if (rounder && lower_bound && upper_bound) {
-                    val = array->RoundValue(val/count, lower_bound, upper_bound, rounder);
+                    val = array->RoundValue(val, lower_bound, upper_bound, rounder);
                 }
                 return materials_map.at(val);
             }
