@@ -398,7 +398,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     T RoundValue(T val, T rounder) {
         if (val < 0) {
             val = floor((val - rounder/2)/rounder)*rounder;
-        } else {
+        } else if (val > 0) {
             val = floor((val + rounder/2)/rounder)*rounder;
         }
 

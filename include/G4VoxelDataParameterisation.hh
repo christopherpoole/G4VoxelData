@@ -87,6 +87,11 @@ public:
         this->yth_offset = 0;
         this->zth_plane = 1;
         this->zth_offset = 0;
+
+        // Rounding
+        this->rounder = NULL;
+        this->lower_bound = NULL;
+        this->upper_bound = NULL;
     };
 
     virtual ~G4VoxelDataParameterisation(){
@@ -168,12 +173,11 @@ public:
             z = z * array->GetMergeSize()[2];
         }
 
-        int index = array->GetIndex(x + offset_x, y + offset_y, z + offset_z); 
-        G4Material* VoxelMaterial = GetMaterial(index);
+        G4Material* VoxelMaterial = GetMaterial(x + offset_x, y + offset_y, z + offset_z);
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
         if (this->visibility) {
-            G4Colour colour = *(GetColour(index));
+            G4Colour colour = *(GetColour(x + offset_x, y + offset_y, z + offset_z));
 
             if ((x + 1) % xth_plane == xth_offset ||
                 (y + 1) % yth_plane == yth_offset ||
@@ -198,34 +202,55 @@ public:
     G4Material* GetMaterial(G4int i) const
     {
         U value;
-        std::vector<unsigned int> indices = array->UnpackIndices(i);
+        
+        if (round_values && trim_values) {
+            value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
+        } else if (round_values && !trim_values) {
+            value = array->GetRoundedValue(i, rounder); 
+        } else {
+            value = array->GetValue(i);
+        }
+
+        return materials_map.at(value);
+    };
+
+    G4Material* GetMaterial(unsigned int x, unsigned int y, unsigned int z)
+    {
+        U value;
 
         if (array->IsMerged()) {
+            std::vector<unsigned int> indices;
+            indices.push_back(x);
+            indices.push_back(y);
+            indices.push_back(z);
+
             double val = 0;
             unsigned int count = 0;
             for (unsigned int axis=0; axis<array->GetDimensions(); axis++) {
-                for (unsigned int offset=0; offset<array->GetMergeSize()[axis]; offset++) {
+                unsigned int stride = array->GetMergeSize()[axis];
+
+                if (stride == 1) {
+                    // Not actually merging voxels in this direction
+                    continue;
+                }
+
+                for (unsigned int offset=1; offset<stride; offset++) {
                     indices[axis] += offset;
                     val += array->GetValue(array->GetIndex(indices));
                     count += 1;
                 }
             }
-            //value = array->RoundValue((U) val/count, rounder); 
-            value = array->RoundValue(val/(count-1), rounder);
-            if (value < lower_bound) value = lower_bound;
-            if (value > upper_bound) value = upper_bound;
-    
-        } else {
-            if (round_values && trim_values) {
-                value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
-            } else if (round_values && !trim_values) {
-                value = array->GetRoundedValue(i, rounder); 
-            } else {
-                value = array->GetValue(i);
+
+            if (count > 0) {   
+                val = (U) val/count;
+
+                if (rounder) {
+                    val = array->RoundValue(val/count, rounder);
+                }
+                return materials_map.at(val);
             }
         }
-
-        return materials_map.at(value);
+        return GetMaterial(array->GetIndex(x, y, z));
     };
 
     unsigned int GetMaterialIndex( unsigned int copyNo) const
@@ -247,6 +272,9 @@ public:
         return colour_map.at(value);
     };
 
+    G4Colour* GetColour(unsigned int x, unsigned int y, unsigned int z) {
+        return GetColour(array->GetIndex(x, y, z));
+    };
 
     void ComputeTransformation(const G4int copyNo, G4VPhysicalVolume *physVol) const
     {
