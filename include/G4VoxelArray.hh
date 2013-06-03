@@ -405,6 +405,15 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         return val;
     };
 
+    T RoundValue(T val, T lower, T upper, T rounder) {
+        val = RoundValue(val, rounder);
+
+        if (val < lower) val = lower;
+        if (val > upper) val = upper;
+
+        return val;
+    };
+
     T GetRoundedValue(unsigned int x, T rounder)
     {
         T val = GetValue(x);
@@ -413,12 +422,8 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     
     T GetRoundedValue(unsigned int x, T lower, T upper, T rounder)
     {
-        T val = GetRoundedValue(x, rounder);
-    
-        if (val < lower) val = lower;
-        if (val > upper) val = upper;
-
-        return val; 
+        T val = GetValue(x);
+        return RoundValue(val, lower, upper, rounder);
     };
 
   public:
