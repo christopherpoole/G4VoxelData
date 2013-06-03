@@ -168,12 +168,11 @@ public:
             z = z * array->GetMergeSize()[2];
         }
 
-        int index = array->GetIndex(x + offset_x, y + offset_y, z + offset_z); 
-        G4Material* VoxelMaterial = GetMaterial(index);
+        G4Material* VoxelMaterial = GetMaterial(x + offset_x, y + offset_y, z + offset_z);
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
         if (this->visibility) {
-            G4Colour colour = *(GetColour(index));
+            G4Colour colour = *(GetColour(x + offset_x, y + offset_y, z + offset_z));
 
             if ((x + 1) % xth_plane == xth_offset ||
                 (y + 1) % yth_plane == yth_offset ||
@@ -198,9 +197,28 @@ public:
     G4Material* GetMaterial(G4int i) const
     {
         U value;
-        std::vector<unsigned int> indices = array->UnpackIndices(i);
+        
+        if (round_values && trim_values) {
+            value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
+        } else if (round_values && !trim_values) {
+            value = array->GetRoundedValue(i, rounder); 
+        } else {
+            value = array->GetValue(i);
+        }
+
+        return materials_map.at(value);
+    };
+
+    G4Material* GetMaterial(unsigned int x, unsigned int y, unsigned int z)
+    {
+        U value;
 
         if (array->IsMerged()) {
+            std::vector<unsigned int> indices;
+            indices.push_back(x);
+            indices.push_back(y);
+            indices.push_back(z);
+
             double val = 0;
             unsigned int count = 0;
             for (unsigned int axis=0; axis<array->GetDimensions(); axis++) {
@@ -216,16 +234,8 @@ public:
             if (value > upper_bound) value = upper_bound;
     
         } else {
-            if (round_values && trim_values) {
-                value = array->GetRoundedValue(i, lower_bound, upper_bound, rounder);
-            } else if (round_values && !trim_values) {
-                value = array->GetRoundedValue(i, rounder); 
-            } else {
-                value = array->GetValue(i);
-            }
+            return GetMaterial(array->GetIndex(x, y, z));
         }
-
-        return materials_map.at(value);
     };
 
     unsigned int GetMaterialIndex( unsigned int copyNo) const
@@ -247,6 +257,9 @@ public:
         return colour_map.at(value);
     };
 
+    G4Colour* GetColour(unsigned int x, unsigned int y, unsigned int z) {
+        return GetColour(array->GetIndex(x, y, z));
+    };
 
     void ComputeTransformation(const G4int copyNo, G4VPhysicalVolume *physVol) const
     {
