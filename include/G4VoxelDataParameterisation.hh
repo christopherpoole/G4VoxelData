@@ -244,8 +244,10 @@ public:
             if (count > 0) {   
                 val = (U) val/count;
 
-                if (rounder) {
+                if (rounder && !(lower_bound && upper_bound)) {
                     val = array->RoundValue(val/count, rounder);
+                } else if (rounder && lower_bound && upper_bound) {
+                    val = array->RoundValue(val/count, lower_bound, upper_bound, rounder);
                 }
                 return materials_map.at(val);
             }
