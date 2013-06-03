@@ -87,6 +87,11 @@ public:
         this->yth_offset = 0;
         this->zth_plane = 1;
         this->zth_offset = 0;
+
+        // Rounding
+        this->rounder = NULL;
+        this->lower_bound = NULL;
+        this->upper_bound = NULL;
     };
 
     virtual ~G4VoxelDataParameterisation(){
@@ -222,20 +227,30 @@ public:
             double val = 0;
             unsigned int count = 0;
             for (unsigned int axis=0; axis<array->GetDimensions(); axis++) {
-                for (unsigned int offset=0; offset<array->GetMergeSize()[axis]; offset++) {
+                unsigned int stride = array->GetMergeSize()[axis];
+
+                if (stride == 1) {
+                    // Not actually merging voxels in this direction
+                    continue;
+                }
+
+                for (unsigned int offset=1; offset<stride; offset++) {
                     indices[axis] += offset;
                     val += array->GetValue(array->GetIndex(indices));
                     count += 1;
                 }
             }
-            //value = array->RoundValue((U) val/count, rounder); 
-            value = array->RoundValue(val/(count-1), rounder);
-            if (value < lower_bound) value = lower_bound;
-            if (value > upper_bound) value = upper_bound;
-    
-        } else {
-            return GetMaterial(array->GetIndex(x, y, z));
+
+            if (count > 0) {   
+                val = (U) val/count;
+
+                if (rounder) {
+                    val = array->RoundValue(val/count, rounder);
+                }
+                return materials_map.at(val);
+            }
         }
+        return GetMaterial(array->GetIndex(x, y, z));
     };
 
     unsigned int GetMaterialIndex( unsigned int copyNo) const
