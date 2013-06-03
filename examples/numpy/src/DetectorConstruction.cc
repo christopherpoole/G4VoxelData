@@ -81,7 +81,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     std::vector<unsigned int> shape = array->GetShape();
     // Crop if desired, array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
     //array->Crop(0, shape[0], 0, shape[1], 0, shape[2]);
-    array->MergeX(1);
+    array->MergeX(2);
     array->MergeY(2);
 
     // Presently we can only map agains the real part of complex numpyers
