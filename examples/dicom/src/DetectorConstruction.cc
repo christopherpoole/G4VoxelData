@@ -95,6 +95,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     
     // We can crop away unwanted parts of the dataset by setting
     // array->Crop(xmin, xmax, ymin, ymax, zmin, zmax);
+    array->CropZ(0, 50);
+
+    // We can also reduce the apparent resolution of the dataset
+    // by merging groups of voxels. Note that the merge value has
+    // to be a factor of the dataset dimensions.
+    array->MergeX(2);
+    array->MergeY(2);
+    array->MergeZ(2);
 
     // Make a mapping between the data in array and G4Materials
     // at increaments of 25 HU.
@@ -110,7 +118,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     voxeldata_param->Construct(G4ThreeVector(), rotation);
     voxeldata_param->SetRounding(25, -1000, 2000);
     voxeldata_param->ShowMidPlanes();
-    voxeldata_param->ShowZPlanes(15, 0); // every 15th slice
+    //voxeldata_param->ShowZPlanes(15, 0); // every 15th slice
 
     std::map<int16_t, G4Colour*> colours;
     for (int i=-2500; i<5000; i++) {
