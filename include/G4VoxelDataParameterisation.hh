@@ -150,29 +150,17 @@ public:
     G4Material* ComputeMaterial(G4VPhysicalVolume *physical_volume,
             const G4int copy_number, const G4VTouchable *parent_touchable)
     {
-        G4int x = parent_touchable->GetReplicaNumber(0);
-        G4int y = parent_touchable->GetReplicaNumber(1);
-        G4int z = copy_number;
+        G4int x = parent_touchable->GetReplicaNumber(0) * array->GetMergeSize()[0];
+        G4int y = parent_touchable->GetReplicaNumber(1) * array->GetMergeSize()[1];
+        G4int z = copy_number * array->GetMergeSize()[2];
 
         if (z < 0) z = 0;
 
         // Correct index for cropping distances
-        unsigned int offset_x = 0;
-        unsigned int offset_y = 0;
-        unsigned int offset_z = 0;
-
-        if (array->IsCropped()) {
-            offset_x = array->GetCropLimit()[0];
-            offset_y = array->GetCropLimit()[2];
-            offset_z = array->GetCropLimit()[4];
-        }
-
-        if (array->IsMerged()) {
-            x = x * array->GetMergeSize()[0];
-            y = y * array->GetMergeSize()[1];
-            z = z * array->GetMergeSize()[2];
-        }
-
+        unsigned int offset_x = array->GetCropLimit()[0];
+        unsigned int offset_y = array->GetCropLimit()[2];
+        unsigned int offset_z = array->GetCropLimit()[4];
+        
         G4Material* VoxelMaterial = GetMaterial(x + offset_x, y + offset_y, z + offset_z);
         physical_volume->GetLogicalVolume()->SetMaterial(VoxelMaterial);
 
@@ -192,7 +180,6 @@ public:
 
         return VoxelMaterial;
     };
-
 
     G4int GetNumberOfMaterials() const
     {
