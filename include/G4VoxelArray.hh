@@ -469,6 +469,11 @@ class G4VoxelArray<std::complex<T> > : public G4VoxelArrayBase<T> {
         return ((*array)[index]).real(); 
     };
 
+    T GetValue(unsigned int x, unsigned int y) {
+        unsigned int index = GetIndex(x, y);
+        return ((*array)[index]).real(); 
+    }
+
     T GetRoundedValue(unsigned int x, std::complex<T> rounder)
     {
         T val = GetValue(x);
