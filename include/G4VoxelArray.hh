@@ -137,7 +137,20 @@ class G4VoxelArrayBase {
     unsigned int GetIndex(std::vector<unsigned int> indices) {
         return GetIndex(indices, this->shape);
     };
-    
+   
+    unsigned int GetIndex(unsigned int x, unsigned int y,
+            std::vector<unsigned int> shape) {
+        std::vector<unsigned int> indices;
+        indices.push_back(x);
+        indices.push_back(y);
+
+        return GetIndex(indices, shape);
+    };
+
+    unsigned int GetIndex(unsigned int x, unsigned int y) {
+        return GetIndex(x, y, this->shape);
+    };
+
     unsigned int GetIndex(unsigned int x, unsigned int y, unsigned int z,
             std::vector<unsigned int> shape) {
         std::vector<unsigned int> indices;
@@ -388,6 +401,11 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     virtual T GetValue(unsigned int x) {
         unsigned int index = GetIndex(x);
         return (*array)[index]; 
+    };
+
+    virtual T GetValue(unsigned int x, unsigned int y) {
+        unsigned int index = GetIndex(x, y);
+        return GetValue(index);
     };
 
     virtual T GetValue(unsigned int x, unsigned int y, unsigned int z) {
