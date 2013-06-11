@@ -100,9 +100,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     // We can also reduce the apparent resolution of the dataset
     // by merging groups of voxels. Note that the merge value has
     // to be a factor of the dataset dimensions.
-    array->MergeX(2);
-    array->MergeY(2);
-    array->MergeZ(2);
+    // array->MergeX(2);
+    // array->MergeY(2);
+    // array->MergeZ(2);
 
     // Make a mapping between the data in array and G4Materials
     // at increaments of 25 HU.
