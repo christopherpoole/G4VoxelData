@@ -35,14 +35,52 @@
 
 // STL //
 #include <vector>
+#include <sstream>
+#include <fstream>
 
 // GEANT4 //
 #include "globals.hh"
 
 
-class NumpyDataIO : public G4VoxelDataIO {
+class TxtDataIO : public G4VoxelDataIO {
   public:
     G4VoxelData* Read(G4String filename) {
+        std::ifstream lines;
+        lines.open(filename, std::ios_base::in);
+        std::string line;
+
+        unsigned int ndims;
+        unsigned int word_size;
+        std::vector<unsigned int> shape;
+        std::vector<double> spacing;
+
+        // Read header metadata
+        while (std::getline(lines, line)) {
+            std::istringstream l(line);
+
+            std::string property;
+            l >> property;
+
+            if (property == "ndims") {
+                l >> ndims;
+            } else if ((property == "shape") && (ndims > 0)) {
+                unsigned int s;
+                for (int i=0; i<ndims; i++) {
+                    l >> s;
+                    shape.push_back(s);
+                }
+            } else if (property == "end_header") {
+                break;
+            }
+        }
+
+        unsigned int size = 1;
+        for (unsigned int i=0; i<ndims; i++) size *= shape[i];
+
+        
+        while (std::getline(lines, line)) {
+
+        }
         //return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, ROW_MAJOR);
     };
 };
