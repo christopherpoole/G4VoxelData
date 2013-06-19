@@ -85,10 +85,18 @@ class TxtDataIO : public G4VoxelDataIO {
         unsigned int size = 1;
         for (unsigned int i=0; i<ndims; i++) size *= shape[i];
 
+        // Populate data vector
+        double val;
+        std::vector<double>* data = new std::vector<double>;
         while (std::getline(lines, line)) {
+            std::istringstream l(line);
+            while (l >> val) {
+                data->push_back(val);
+            }
         }
         
-        //return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, ROW_MAJOR);
+        std::vector<char>* buffer = reinterpret_cast<std::vector<char>*>(data);
+        return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, ROW_MAJOR);
     };
 };
 
