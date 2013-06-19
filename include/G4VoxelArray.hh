@@ -34,6 +34,7 @@
 
 // STL //
 #include <vector>
+#include "stdint.h"
 
 // GEANT4 //
 #include "globals.hh"
