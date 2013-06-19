@@ -53,6 +53,7 @@ class TxtDataIO : public G4VoxelDataIO {
         unsigned int word_size;
         std::vector<unsigned int> shape;
         std::vector<double> spacing;
+        std::vector<double> origin;
 
         // Read header metadata
         while (std::getline(lines, line)) {
@@ -69,6 +70,13 @@ class TxtDataIO : public G4VoxelDataIO {
                     l >> s;
                     shape.push_back(s);
                 }
+            } else if ((property == "origin") && (ndims > 0)) {
+                unsigned int o;
+                for (int i=0; i<ndims; i++) {
+                    l >> o;
+                    origin.push_back(o);
+                }
+
             } else if (property == "end_header") {
                 break;
             }
@@ -77,10 +85,9 @@ class TxtDataIO : public G4VoxelDataIO {
         unsigned int size = 1;
         for (unsigned int i=0; i<ndims; i++) size *= shape[i];
 
-        
         while (std::getline(lines, line)) {
-
         }
+        
         //return new G4VoxelData(buffer, size, ndims, shape, spacing, origin, UNKNOWN, ROW_MAJOR);
     };
 };
