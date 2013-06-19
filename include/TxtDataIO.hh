@@ -50,7 +50,7 @@ class TxtDataIO : public G4VoxelDataIO {
         std::string line;
 
         unsigned int ndims;
-        unsigned int word_size;
+        //unsigned int word_size;
         std::vector<unsigned int> shape;
         std::vector<double> spacing;
         std::vector<double> origin;
@@ -66,13 +66,13 @@ class TxtDataIO : public G4VoxelDataIO {
                 l >> ndims;
             } else if ((property == "shape") && (ndims > 0)) {
                 unsigned int s;
-                for (int i=0; i<ndims; i++) {
+                for (unsigned int i=0; i<ndims; i++) {
                     l >> s;
                     shape.push_back(s);
                 }
             } else if ((property == "origin") && (ndims > 0)) {
                 unsigned int o;
-                for (int i=0; i<ndims; i++) {
+                for (unsigned int i=0; i<ndims; i++) {
                     l >> o;
                     origin.push_back(o);
                 }
