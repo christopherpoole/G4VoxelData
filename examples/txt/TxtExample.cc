@@ -35,9 +35,9 @@ int main(int, char** argv)
     TxtDataIO* reader = new TxtDataIO();
 
     G4VoxelData* data = reader->Read(argv[1]);
-    G4VoxelArray<float>* array = new G4VoxelArray<float>(data);
+    G4VoxelArray<double>* array = new G4VoxelArray<double>(data);
 
-    G4cout << array->GetValue(0, 0) << G4endl;
+    G4cout << array->GetValue(1, 2) << G4endl;
 
     return 0;
 }
