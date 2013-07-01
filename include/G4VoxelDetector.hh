@@ -51,8 +51,32 @@ class DetectorConstruction;
 template <typename T>
 class G4VoxelDetector : public G4VSensitiveDetector {
   public:
+    G4VoxelDetector(G4String name, G4ThreeVector shape,
+            G4ThreeVector spacing) : G4VSensitiveDetector(name)
+    {
+        std::vector<unsigned int> shape_vector;
+        shape_vector.push_back(shape.x());
+        shape_vector.push_back(shape.y());
+        shape_vector.push_back(shape.z());
+    
+        std::vector<unsigned int> spacing_vector;
+        spacing_vector.push_back(spacing.x());
+        spacing_vector.push_back(spacing.y());
+        spacing_vector.push_back(spacing.z());
+
+        Init(name, shape_vector, spacing_vector);
+    }
+
     G4VoxelDetector(G4String name, std::vector<unsigned int> shape,
-            std::vector<double> spacing) : G4VSensitiveDetector(name) {
+            std::vector<double> spacing) : G4VSensitiveDetector(name)
+    
+    {
+        Init(name, shape, spacing);
+    }
+
+    void Init(G4String name, std::vector<unsigned int> shape,
+            std::vector<double> spacing)
+    {
         debug = false;
 
         this->shape = shape;
