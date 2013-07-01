@@ -60,7 +60,7 @@ class G4VoxelDetector : public G4VSensitiveDetector {
         shape_vector.push_back(shape.y());
         shape_vector.push_back(shape.z());
     
-        std::vector<unsigned int> spacing_vector;
+        std::vector<double> spacing_vector;
         spacing_vector.push_back(spacing.x());
         spacing_vector.push_back(spacing.y());
         spacing_vector.push_back(spacing.z());
