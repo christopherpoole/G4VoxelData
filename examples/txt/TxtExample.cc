@@ -37,7 +37,9 @@ int main(int, char** argv)
     G4VoxelData* data = reader->Read(argv[1]);
     G4VoxelArray<double>* array = new G4VoxelArray<double>(data);
 
-    G4cout << array->GetValue(1, 2) << G4endl;
+    G4cout << "Value at (1, 2): " << array->GetValue(1, 2) << G4endl;
+    G4cout << "Max: " << array->GetMaxValue() << G4endl;
+    G4cout << "Min: " << array->GetMinValue() << G4endl;
 
     return 0;
 }
