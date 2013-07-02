@@ -101,6 +101,10 @@ class G4VoxelArrayBase {
         return G4ThreeVector(cropped_shape[0], cropped_shape[1], cropped_shape[2]);
     };
 
+    G4ThreeVector GetOrigin() {
+        return G4ThreeVector(data->origin[0], data->origin[1], data->origin[2]);
+    };
+
     unsigned int GetIndex(unsigned int index) {
         return index;
     };
