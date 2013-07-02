@@ -414,6 +414,12 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         return GetValue(index);
     };
 
+    virtual T GetValue(G4ThreeVector position) {
+        return GetValue((unsigned int) position.x(),
+                (unsigned int) position.y(),
+                (unsigned int) position.z());
+    }
+
     T RoundValue(T val, T rounder) {
         if (val < 0) {
             val = floor((val - rounder/2)/rounder)*rounder;
