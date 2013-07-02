@@ -451,6 +451,14 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         return RoundValue(val, lower, upper, rounder);
     };
 
+    T GetMaxValue() {
+        return *std::max_element(array->begin(), array->end());
+    };
+
+    T GetMinValue() {
+        return *std::min_element(array->begin(), array->end());
+    };
+
   public:
     std::vector<T>* array;
 };
