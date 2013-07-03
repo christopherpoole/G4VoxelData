@@ -320,6 +320,15 @@ class G4VoxelArrayBase {
         this->shape = shape;
     }
 
+    void SetShape(G4ThreeVector shape) {
+        std::vector<double> s;
+        s.push_back(shape.x());
+        s.push_back(shape.y());
+        s.push_back(shape.z());
+
+        SetShape(s);
+    };
+
     std::vector<double> GetSpacing() {
         if (this->merged) {
             std::vector<double> spacing;
