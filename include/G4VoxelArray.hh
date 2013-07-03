@@ -350,7 +350,7 @@ class G4VoxelArrayBase {
         s.push_back(spacing.y());
         s.push_back(spacing.z());
 
-        this->spacing = s;
+        SetSpacing(s);
     };
 
   protected:
