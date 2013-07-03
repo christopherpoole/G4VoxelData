@@ -170,6 +170,10 @@ class G4VoxelArrayBase {
         return GetIndex(x, y, z, this->shape);
     };
 
+    unsigned int GetIndex(G4ThreeVector position) {
+        return GetIndex(position.x(), position.y(), position.z());
+    };
+
     std::vector<unsigned int> UnpackIndices(unsigned int index) {
         unsigned int x, y, z, sub_index;
 
