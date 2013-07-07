@@ -407,6 +407,10 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         (*array)[index] = value;
     }
 
+    virtual void SetValue(T value, G4ThreeVector position) {
+        SetValue(value, position.x(), position.y(), position.z());
+    };
+
     virtual void IncrementValue(T value, unsigned int x, unsigned int y, unsigned int z) {
         unsigned int index = GetIndex(x, y, z);
         (*array)[index] += value;
