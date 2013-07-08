@@ -105,6 +105,28 @@ class G4VoxelArrayBase {
         return G4ThreeVector(data->origin[0], data->origin[1], data->origin[2]);
     };
 
+    std::vector<double> GetPosition(std::vector<unsigned int> indices) {
+        std::vector<double> position;
+
+        for (unsigned int i=0; i<indices.size(); i++) {
+            double pos = (indices[i] * this->spacing[i])
+                       - (this->shape[i]/2. * this->spacing[i]);
+            position.push_back(pos);
+        }
+
+        return position;
+    }
+
+    G4ThreeVector GetPosition(G4ThreeVector indices) {
+        std::vector<unsigned int> inds;
+        inds.push_back(indices.x()); 
+        inds.push_back(indices.y()); 
+        inds.push_back(indices.z());
+
+        std::vector<double> pos = GetPosition(inds);
+        return G4ThreeVector(pos[0], pos[1], pos[2]); 
+    };
+
     unsigned int GetIndex(unsigned int index) {
         return index;
     };
