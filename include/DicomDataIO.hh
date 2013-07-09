@@ -56,7 +56,7 @@ class DicomDataIO : public G4VoxelDataIO {
         this->acquisition_number = -1;
 
         this->override_slope = false;
-        this->slope= 0;
+        this->slope = 1;
         this->override_intercept = false;
         this->intercept = 0;
     };    
