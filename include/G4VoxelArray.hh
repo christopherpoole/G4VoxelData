@@ -113,7 +113,7 @@ class G4VoxelArrayBase {
         std::vector<double> position;
 
         for (unsigned int i=0; i<indices.size(); i++) {
-            double pos = GetPosition(indices[i], this->shape[i], this->spacing[i]);
+            double pos = GetPosition(indices[i], this->shape[i], (double) this->spacing[i]);
             position.push_back(pos);
         }
 
@@ -145,7 +145,10 @@ class G4VoxelArrayBase {
     }
 
     G4ThreeVector GetPosition(G4ThreeVector indices) {
-        std::vector<double> pos = GetPosition(indices.x(), indices.y(), indices.z());
+        std::vector<double> pos = GetPosition(
+            (unsigned int) indices.x(),
+            (unsigned int) indices.y(),
+            (unsigned int) indices.z());
         return G4ThreeVector(pos[0], pos[1], pos[2]); 
     };
 
