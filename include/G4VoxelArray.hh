@@ -442,6 +442,23 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
     }
 
+    G4VoxelArray(G4ThreeVector shape, G4ThreeVector spacing) {
+        std::vector<unsigned int> sh;
+        sh.push_back(shape.x());
+        sh.push_back(shape.y());
+        sh.push_back(shape.z());
+
+        std::vector<double> sp;
+        sp.push_back(spacing.x());
+        sp.push_back(spacing.y());
+        sp.push_back(spacing.z());
+
+        G4VoxelData* data = new G4VoxelData(sh, sp, sizeof(T));
+        Init(data);
+        
+        this->array = reinterpret_cast<std::vector<T>*>(data->array);
+    }
+
     ~G4VoxelArray() {};
 
     using G4VoxelArrayBase<T>::GetIndex; 
