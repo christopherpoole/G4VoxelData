@@ -457,6 +457,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
         Init(data);
         
         this->array = reinterpret_cast<std::vector<T>*>(data->array);
+        this->array->assign(data->length,(T) 0);
     }
 
     ~G4VoxelArray() {};
