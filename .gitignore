@@ -8,4 +8,7 @@ build/
 examples/dicom/build/
 examples/numpy/build/
 
+docs/html/
+docs/latex/
+
 core
