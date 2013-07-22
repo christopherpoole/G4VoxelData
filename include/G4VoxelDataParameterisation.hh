@@ -203,8 +203,6 @@ public:
 
     G4Material* GetMaterial(unsigned int x, unsigned int y, unsigned int z)
     {
-        U value;
-
         if (array->IsMerged()) {
             std::vector<unsigned int> indices;
             indices.push_back(x);
