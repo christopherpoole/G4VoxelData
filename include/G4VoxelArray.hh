@@ -105,6 +105,18 @@ class G4VoxelArrayBase {
         return G4ThreeVector(data->origin[0], data->origin[1], data->origin[2]);
     };
 
+    G4double GetOriginX() {
+        return GetOrigin()[0];
+    };
+
+    G4double GetOriginY() {
+        return GetOrigin()[1];
+    };
+
+    G4double GetOriginZ() {
+        return GetOrigin()[2];
+    };
+
     double GetPosition(unsigned int index, unsigned int shape, double spacing) {
         return (index * spacing) - (shape/2. * spacing);
     }
@@ -363,6 +375,18 @@ class G4VoxelArrayBase {
         return this->cropped_shape;
     };
 
+    unsigned int GetShapeX() {
+        return GetShape()[0];
+    };
+
+    unsigned int GetShapeY() {
+        return GetShape()[1];
+    };
+
+    unsigned int GetShapeZ() {
+        return GetShape()[2];
+    };
+
     void SetShape(std::vector<unsigned int> shape) {
         this->shape = shape;
     }
@@ -385,6 +409,18 @@ class G4VoxelArrayBase {
             return spacing;
         }
         return this->spacing;
+    };
+
+    unsigned int GetSpacingX() {
+        return GetSpacing()[0];
+    };
+
+    unsigned int GetSpacingY() {
+        return GetSpacing()[1];
+    };
+
+    unsigned int GetSpacingZ() {
+        return GetSpacing()[2];
     };
 
     void SetSpacing(std::vector<double> spacing) {
