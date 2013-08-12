@@ -52,6 +52,11 @@ class NumpyDataIO : public G4VoxelDataIO {
         unsigned int ndims = array.shape.size();
         std::vector<unsigned int> shape = array.shape;
 
+        if (ndims == 2) {
+            ndims = 3;
+            shape.push_back(1);
+        }
+
         unsigned int size = array.word_size;
         for (unsigned int i=0; i<ndims; i++) size *= shape[i]; 
 
