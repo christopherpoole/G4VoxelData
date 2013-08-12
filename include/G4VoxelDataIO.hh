@@ -38,7 +38,14 @@
 
 class G4VoxelDataIO {
   public:
-    G4VoxelDataIO() {};
+    G4VoxelDataIO() {
+        this->verbose = false;
+    };
+    
+    G4VoxelDataIO(G4bool verbose) {
+        this->verbose = verbose;
+    };
+    
     ~G4VoxelDataIO() {};
 
   public:
@@ -53,6 +60,18 @@ class G4VoxelDataIO {
         G4Exception("G4VoxelData::Write", "Writing data not implemented.",
                 FatalException, "");
     };
+
+  public:
+    void SetVerbose(G4bool verbose) {
+        this->verbose = verbose;
+    }; 
+
+    G4bool GetVerbose() {
+        return this->verbose;
+    };
+
+    G4bool verbose;
+
 };
 
 #endif // G4VOXELDATAIO_H
