@@ -31,6 +31,7 @@
 
 // G4VOXELDATA //
 #include "G4VoxelData.hh"
+#include "G4VoxelDataLogger.hh"
 
 // GEANT4 //
 #include "globals.hh"
@@ -40,10 +41,12 @@ class G4VoxelDataIO {
   public:
     G4VoxelDataIO() {
         this->verbose = false;
+        this->logger = new G4VoxelDataLogger(ERROR);
     };
     
     G4VoxelDataIO(G4bool verbose) {
         this->verbose = verbose;
+        this->logger = new G4VoxelDataLogger(ERROR);
     };
     
     ~G4VoxelDataIO() {};
@@ -63,15 +66,16 @@ class G4VoxelDataIO {
 
   public:
     void SetVerbose(G4bool verbose) {
-        this->verbose = verbose;
+        this->logger->SetVerbose(verbose);
     }; 
 
     G4bool GetVerbose() {
-        return this->verbose;
+        return this->logger->GetVerbose();
     };
 
+  public:
     G4bool verbose;
-
+    G4VoxelDataLogger* logger;
 };
 
 #endif // G4VOXELDATAIO_H
