@@ -80,6 +80,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     world_logical->SetVisAttributes(G4VisAttributes::Invisible);
     
     DicomDataIO* reader = new DicomDataIO();
+    reader->SetVerbose(true);
     // read and sort in z/slice direction: true
     // reader->SetSort(true);
     // reader->SetModality("CT");
