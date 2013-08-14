@@ -102,16 +102,16 @@ class DicomDataIO : public G4VoxelDataIO {
     G4VoxelData* ReadDirectory(G4String directory)
     {
         logger->SetPrefix("DicomDataIO::ReadDirectory:");
-        logger->message << "Reading files in " << directory << G4endl;
+        logger->message << "Reading files in " << directory << std::endl;
 
         gdcm::Directory dir;
         dir.Load((const char*) directory.c_str());
         std::vector<std::string> input_filenames = dir.GetFilenames();
 
         if (input_filenames.size() == 0) {
-            //logger.error << "Specified directory is empty." << G4endl;
+            logger->message << "Specified directory is empty." << std::endl;
         } else {
-            //logger.message << "Found " << input_filenames.size() << " files in " << directory << G4endl;
+            logger->message << "Found " << input_filenames.size() << " files in " << directory << std::endl;
         }
 
         // Lookup the modality of all images in the directory, we will choose
@@ -130,9 +130,9 @@ class DicomDataIO : public G4VoxelDataIO {
                                                   (const char*) modality.c_str());
 
         if (filtered_filenames.size() == 0) {
-           //logger.error << "No files of modality " << modality << " in " << directory << G4endl; 
+            logger->error << "No files of modality " << modality << " in " << directory << std::endl; 
         } else {
-            //logger.message << "Found " << filtered_filenames.size() << " " << modality << " files." << G4endl;;
+            logger->message << "Found " << filtered_filenames.size() << " " << modality << " files." << std::endl;
         }
 
         if (acquisition_number > 0) {
@@ -143,9 +143,9 @@ class DicomDataIO : public G4VoxelDataIO {
                         (const char*) aq_number.c_str());
 
             if (filtered_filenames.size() == 0) {
-                //logger.error << "No files of acquisition number " << acquisition_number << " in directory." << G4endl;
+                 logger->error << "No files of acquisition number " << acquisition_number << " in directory." << std::endl;
             } else {
-                 //logger.message << "Found " << filtered_filenames.size() << " files in acquisition " << acquisition_number << G4endl;
+                 logger->message << "Found " << filtered_filenames.size() << " files in acquisition " << acquisition_number << std::endl;
             }
         }
         
@@ -157,8 +157,8 @@ class DicomDataIO : public G4VoxelDataIO {
             sorter.Sort(filtered_filenames);
             filenames = sorter.GetFilenames();
 
-            //if (filenames.size() == 0)
-                //logger.error << "Files could not be sorted, check acquisition number" << G4endl;
+            if (filenames.size() == 0)
+                logger->error << "Files could not be sorted, check acquisition number" << std::endl;
         } else {
             filenames = filtered_filenames;
         }

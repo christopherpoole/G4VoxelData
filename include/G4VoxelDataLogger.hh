@@ -85,7 +85,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
 
 class G4VoxelDataLogger {
   public:
-    G4VoxelDataLogger(G4VoxelDataLoggerLevel level) : message() {
+    G4VoxelDataLogger(G4VoxelDataLoggerLevel level) : message(), warning(), error(), debug() {
         this->level = level;
     };
     
@@ -123,9 +123,9 @@ class G4VoxelDataLogger {
     G4VoxelDataLoggerLevel level;
 
     G4VoxelDataLoggerStream message;
-    //G4VoxelDataLoggerStream warning;
-    //G4VoxelDataLoggerStream error;
-    //G4VoxelDataLoggerStream debug;
+    G4VoxelDataLoggerStream warning;
+    G4VoxelDataLoggerStream error;
+    G4VoxelDataLoggerStream debug;
 };
 
 #endif // G4VOXELDATALOGGER_H
