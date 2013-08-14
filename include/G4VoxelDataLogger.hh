@@ -61,7 +61,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
         };
 
         int sync() {
-            std::cout << buffer << " : " << str() << std::endl;
+            std::cout << buffer << " : " << str();
             str("");
             return !std::cout;
         };
@@ -74,9 +74,6 @@ class G4VoxelDataLoggerStream : public std::ostream {
     G4VoxelDataLoggerStream() : std::ostream(new Buffer("G4VoxelData")){
     };
 
-    G4VoxelDataLoggerStream(const std::string& name) : std::ostream(new Buffer(name)) {
-    };
-
     ~G4VoxelDataLoggerStream() {
         delete rdbuf();
     };
@@ -87,6 +84,8 @@ class G4VoxelDataLogger {
   public:
     G4VoxelDataLogger(G4VoxelDataLoggerLevel level) : message(), warning(), error(), debug() {
         this->level = level;
+
+
     };
     
     ~G4VoxelDataLogger() {};
