@@ -195,8 +195,7 @@ class DicomDataIO : public G4VoxelDataIO {
     };
 
     G4VoxelData* Read(G4String filename) {
-        if (this->verbose)
-            G4cout << "Reading: " << filename << G4endl;
+        logger->message << "Reading: " << filename << std::endl;
 
         gdcm::ImageReader* reader = new gdcm::ImageReader();
         reader->SetFileName((const char*) filename.c_str());
@@ -204,7 +203,7 @@ class DicomDataIO : public G4VoxelDataIO {
         try {
             reader->Read();
         } catch (...) {
-            G4Exception("DicomData::Read", "cannot read data.", FatalException, "");
+            logger->error << "Cannot read data from file " << filename << std::endl;
         }
 
         gdcm::Image* image = &reader->GetImage();
@@ -235,11 +234,15 @@ class DicomDataIO : public G4VoxelDataIO {
         char* buffer_out = new char[buffer_length];
         image->GetBuffer(buffer_in);
 
-        if (!override_slope)
+        if (!override_slope) {
             slope = image->GetSlope();
+            logger->debug << "Setting slope as read from file to " << slope << std::endl;
+        }
 
-        if (!override_intercept)
+        if (!override_intercept) {
             intercept = image->GetIntercept();
+            logger->debug << "Setting intercept as read from file to " << intercept << std::endl;
+        }
 
         gdcm::Rescaler rescaler = gdcm::Rescaler();
         rescaler.SetIntercept(intercept);
