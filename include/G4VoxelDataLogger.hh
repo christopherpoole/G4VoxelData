@@ -55,7 +55,10 @@ class G4VoxelDataLoggerStream : public std::ostream {
       public:
         Buffer() {
         };
-        
+
+        Buffer(const std::string& buf) : buffer(buf) {
+        };
+
         ~Buffer() {
             pubsync();
         };
@@ -77,6 +80,10 @@ class G4VoxelDataLoggerStream : public std::ostream {
     ~G4VoxelDataLoggerStream() {
         delete rdbuf();
     };
+
+    void SetPrefix(std::string prefix) {
+        rdbuf(new Buffer(prefix));
+    };
 };
 
 
@@ -84,6 +91,11 @@ class G4VoxelDataLogger {
   public:
     G4VoxelDataLogger(G4VoxelDataLoggerLevel level) {
         this->level = level;
+
+        message.SetPrefix("G4VoxelData : MESSAGE : ");
+        warning.SetPrefix("G4VoxelData : WARNING : ");
+        error.SetPrefix("G4VoxelData : ERROR   : ");
+        debug.SetPrefix("G4VoxelData : DEBUG   : ");
     };
     
     ~G4VoxelDataLogger() {};
