@@ -53,7 +53,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
   private:
     class Buffer : public std::stringbuf {
       public:
-        Buffer(const std::string& buf) : buffer(buf) {
+        Buffer() {
         };
         
         ~Buffer() {
@@ -61,7 +61,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
         };
 
         int sync() {
-            std::cout << buffer << " : " << str();
+            std::cout << buffer << str();
             str("");
             return !std::cout;
         };
@@ -71,7 +71,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
     };
 
   public:
-    G4VoxelDataLoggerStream() : std::ostream(new Buffer("G4VoxelData")){
+    G4VoxelDataLoggerStream() : std::ostream(new Buffer()){
     };
 
     ~G4VoxelDataLoggerStream() {
