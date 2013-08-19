@@ -82,6 +82,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
     };
 
     void SetPrefix(std::string prefix) {
+        delete rdbuf();
         rdbuf(new Buffer(prefix));
     };
 };
