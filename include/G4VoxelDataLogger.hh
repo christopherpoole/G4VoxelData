@@ -57,6 +57,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
     class Buffer : public std::stringbuf {
       public:
         Buffer() {
+            name = "";
             active = true;
         };
 
@@ -69,10 +70,14 @@ class G4VoxelDataLoggerStream : public std::ostream {
 
         int sync() {
             if (this->active == true) {
-                std::cout << buffer << str();
+                std::cout << name << buffer << str();
             }
             str("");
             return !std::cout;
+        };
+
+        void SetName(std::string name) {
+            this->name = name + ": ";
         };
 
         void SetActive(bool active) {
@@ -81,6 +86,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
 
       private:
         std::string buffer;
+        std::string name;
         bool active;
     };
 
@@ -95,6 +101,10 @@ class G4VoxelDataLoggerStream : public std::ostream {
     void SetActive(bool active) {
         ((Buffer*) rdbuf())->SetActive(active);
     };
+
+    void SetName(std::string name) {
+        ((Buffer*) rdbuf())->SetName(name);
+    };
 };
 
 
@@ -106,6 +116,11 @@ class G4VoxelDataLogger {
         loggers[ERROR] = &error;
         loggers[DEBUG] = &debug;
 
+        std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
+        for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
+            (logger->second)->SetName(LoggerLevelNames[logger->first]);
+        }
+       
         SetLevel(level);
     };
     
