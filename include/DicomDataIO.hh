@@ -101,17 +101,17 @@ class DicomDataIO : public G4VoxelDataIO {
   public:
     G4VoxelData* ReadDirectory(G4String directory)
     {
-        logger->SetPrefix("DicomDataIO::ReadDirectory:");
-        logger->message << "Reading files in " << directory << std::endl;
+        std::string prefix = "DicomDataIO::ReadDirectory: ";
+        logger->message << prefix << "Reading files in " << directory << std::endl;
 
         gdcm::Directory dir;
         dir.Load((const char*) directory.c_str());
         std::vector<std::string> input_filenames = dir.GetFilenames();
 
         if (input_filenames.size() == 0) {
-            logger->message << "Specified directory is empty." << std::endl;
+            logger->message << prefix << "Specified directory is empty." << std::endl;
         } else {
-            logger->message << "Found " << input_filenames.size() << " files in " << directory << std::endl;
+            logger->message << prefix << "Found " << input_filenames.size() << " files in " << directory << std::endl;
         }
 
         // Lookup the modality of all images in the directory, we will choose
@@ -130,9 +130,9 @@ class DicomDataIO : public G4VoxelDataIO {
                                                   (const char*) modality.c_str());
 
         if (filtered_filenames.size() == 0) {
-            logger->error << "No files of modality " << modality << " in " << directory << std::endl; 
+            logger->error <<  prefix << "No files of modality " << modality << " in " << directory << std::endl; 
         } else {
-            logger->message << "Found " << filtered_filenames.size() << " " << modality << " files." << std::endl;
+            logger->message << prefix << "Found " << filtered_filenames.size() << " " << modality << " files." << std::endl;
         }
 
         if (acquisition_number > 0) {
@@ -143,9 +143,9 @@ class DicomDataIO : public G4VoxelDataIO {
                         (const char*) aq_number.c_str());
 
             if (filtered_filenames.size() == 0) {
-                 logger->error << "No files of acquisition number " << acquisition_number << " in directory." << std::endl;
+                 logger->error << prefix << "No files of acquisition number " << acquisition_number << " in directory." << std::endl;
             } else {
-                 logger->message << "Found " << filtered_filenames.size() << " files in acquisition " << acquisition_number << std::endl;
+                 logger->message << prefix << "Found " << filtered_filenames.size() << " files in acquisition " << acquisition_number << std::endl;
             }
         }
         
@@ -158,7 +158,7 @@ class DicomDataIO : public G4VoxelDataIO {
             filenames = sorter.GetFilenames();
 
             if (filenames.size() == 0)
-                logger->error << "Files could not be sorted, check acquisition number" << std::endl;
+                logger->error << prefix << "Files could not be sorted, check acquisition number" << std::endl;
         } else {
             filenames = filtered_filenames;
         }
@@ -195,7 +195,8 @@ class DicomDataIO : public G4VoxelDataIO {
     };
 
     G4VoxelData* Read(G4String filename) {
-        logger->message << "Reading: " << filename << std::endl;
+        std::string prefix = "DicomDataIO::Read";
+        logger->message << prefix << "Reading: " << filename << std::endl;
 
         gdcm::ImageReader* reader = new gdcm::ImageReader();
         reader->SetFileName((const char*) filename.c_str());
@@ -203,7 +204,7 @@ class DicomDataIO : public G4VoxelDataIO {
         try {
             reader->Read();
         } catch (...) {
-            logger->error << "Cannot read data from file " << filename << std::endl;
+            logger->error << prefix << "Cannot read data from file " << filename << std::endl;
         }
 
         gdcm::Image* image = &reader->GetImage();
@@ -236,12 +237,12 @@ class DicomDataIO : public G4VoxelDataIO {
 
         if (!override_slope) {
             slope = image->GetSlope();
-            logger->debug << "Setting slope as read from file to " << slope << std::endl;
+            logger->debug << prefix << "Setting slope as read from file to " << slope << std::endl;
         }
 
         if (!override_intercept) {
             intercept = image->GetIntercept();
-            logger->debug << "Setting intercept as read from file to " << intercept << std::endl;
+            logger->debug << prefix << "Setting intercept as read from file to " << intercept << std::endl;
         }
 
         gdcm::Rescaler rescaler = gdcm::Rescaler();

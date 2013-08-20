@@ -92,11 +92,6 @@ class G4VoxelDataLoggerStream : public std::ostream {
         delete rdbuf();
     };
 
-    void SetPrefix(std::string prefix) {
-        delete rdbuf();
-        rdbuf(new Buffer(prefix));
-    };
-
     void SetActive(bool active) {
         ((Buffer*) rdbuf())->SetActive(active);
     };
@@ -134,24 +129,7 @@ class G4VoxelDataLogger {
         return this->level;
     };
 
-    void SetPrefix(G4String prefix) {
-        this->prefix = prefix;
-        UpdateLoggerPrefixes();
-    };
-    
-    G4String GetPrefix() {
-        return this->prefix;
-    };
-
   private:
-    void UpdateLoggerPrefixes() {
-        std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
-        for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
-            std::string prefix = GetPrefix() +" : "+ LoggerLevelNames[logger->first] +" : ";
-            (logger->second)->SetPrefix(prefix);
-        }
-    };
-
     void UpdateLoggerLevels() {
         std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
         for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
@@ -165,8 +143,6 @@ class G4VoxelDataLogger {
 
   public:
     G4bool verbose;
-    G4String prefix;
-
     G4VoxelDataLoggerLevel level;
 
     std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* > loggers;
