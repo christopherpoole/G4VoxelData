@@ -49,6 +49,9 @@ enum G4VoxelDataLoggerLevel {
 };
 
 
+std::string LoggerLevelNames[] = {"MESSAGE", "WARNING", "ERROR", "DEBUG"};
+
+
 class G4VoxelDataLoggerStream : public std::ostream {
   private:
     class Buffer : public std::stringbuf {
@@ -103,12 +106,12 @@ class G4VoxelDataLoggerStream : public std::ostream {
 class G4VoxelDataLogger {
   public:
     G4VoxelDataLogger(G4VoxelDataLoggerLevel level) {
-        this->level = level;
+        loggers[MESSAGE] = &message;
+        loggers[WARNING] = &warning;
+        loggers[ERROR] = &error;
+        loggers[DEBUG] = &debug;
 
-        message.SetPrefix("G4VoxelData : MESSAGE : ");
-        warning.SetPrefix("G4VoxelData : WARNING : ");
-        error.SetPrefix("G4VoxelData : ERROR   : ");
-        debug.SetPrefix("G4VoxelData : DEBUG   : ");
+        SetLevel(level);
     };
     
     ~G4VoxelDataLogger() {};
@@ -124,6 +127,7 @@ class G4VoxelDataLogger {
 
     void SetLevel(G4VoxelDataLoggerLevel level) {
         this->level = level;
+        UpdateLoggerLevels();
     };
 
     G4VoxelDataLoggerLevel GetLevel() {
@@ -132,10 +136,31 @@ class G4VoxelDataLogger {
 
     void SetPrefix(G4String prefix) {
         this->prefix = prefix;
+        UpdateLoggerPrefixes();
     };
     
     G4String GetPrefix() {
         return this->prefix;
+    };
+
+  private:
+    void UpdateLoggerPrefixes() {
+        std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
+        for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
+            std::string prefix = GetPrefix() +" : "+ LoggerLevelNames[logger->first] +" : ";
+            (logger->second)->SetPrefix(prefix);
+        }
+    };
+
+    void UpdateLoggerLevels() {
+        std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
+        for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
+            if (logger->first <= this->level) {
+                (logger->second)->SetActive(true);
+            } else {
+                (logger->second)->SetActive(false);
+            }
+        }
     };
 
   public:
@@ -143,6 +168,8 @@ class G4VoxelDataLogger {
     G4String prefix;
 
     G4VoxelDataLoggerLevel level;
+
+    std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* > loggers;
 
     G4VoxelDataLoggerStream message;
     G4VoxelDataLoggerStream warning;
