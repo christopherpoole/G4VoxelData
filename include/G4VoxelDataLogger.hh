@@ -54,6 +54,7 @@ class G4VoxelDataLoggerStream : public std::ostream {
     class Buffer : public std::stringbuf {
       public:
         Buffer() {
+            active = true;
         };
 
         Buffer(const std::string& buf) : buffer(buf) {
@@ -64,13 +65,20 @@ class G4VoxelDataLoggerStream : public std::ostream {
         };
 
         int sync() {
-            std::cout << buffer << str();
+            if (this->active == true) {
+                std::cout << buffer << str();
+            }
             str("");
             return !std::cout;
         };
 
+        void SetActive(bool active) {
+            this->active = active;
+        };
+
       private:
         std::string buffer;
+        bool active;
     };
 
   public:
@@ -84,6 +92,10 @@ class G4VoxelDataLoggerStream : public std::ostream {
     void SetPrefix(std::string prefix) {
         delete rdbuf();
         rdbuf(new Buffer(prefix));
+    };
+
+    void SetActive(bool active) {
+        ((Buffer*) rdbuf())->SetActive(active);
     };
 };
 
