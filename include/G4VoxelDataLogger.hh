@@ -49,7 +49,6 @@ enum G4VoxelDataLoggerLevel {
 };
 
 
-//std::string LoggerLevelNames[] = {"MESSAGE", "WARNING", "ERROR", "DEBUG"};
 
 
 class G4VoxelDataLoggerStream : public std::ostream {
@@ -116,9 +115,10 @@ class G4VoxelDataLogger {
         loggers[ERROR] = &error;
         loggers[DEBUG] = &debug;
 
+        std::string LoggerLevelNames[] = {"MESSAGE", "WARNING", "ERROR", "DEBUG"};
         std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
         for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
-            //(logger->second)->SetName(LoggerLevelNames[logger->first]);
+            (logger->second)->SetName(LoggerLevelNames[logger->first]);
         }
        
         SetLevel(level);
