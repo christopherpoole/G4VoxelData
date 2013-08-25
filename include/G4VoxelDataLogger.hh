@@ -41,7 +41,7 @@
 #include "G4UIcommand.hh"
 
 
-enum G4VoxelDataLoggerLevel {
+enum LoggerLevel {
     MESSAGE,
     WARNING,
     ERROR,
@@ -49,9 +49,7 @@ enum G4VoxelDataLoggerLevel {
 };
 
 
-
-
-class G4VoxelDataLoggerStream : public std::ostream {
+class LoggerStream : public std::ostream {
   private:
     class Buffer : public std::stringbuf {
       public:
@@ -90,10 +88,10 @@ class G4VoxelDataLoggerStream : public std::ostream {
     };
 
   public:
-    G4VoxelDataLoggerStream() : std::ostream(new Buffer()){
+    LoggerStream() : std::ostream(new Buffer()){
     };
 
-    ~G4VoxelDataLoggerStream() {
+    ~LoggerStream() {
         delete rdbuf();
     };
 
@@ -107,16 +105,16 @@ class G4VoxelDataLoggerStream : public std::ostream {
 };
 
 
-class G4VoxelDataLogger {
+class Logger {
   public:
-    G4VoxelDataLogger(G4VoxelDataLoggerLevel level) {
+    Logger(LoggerLevel level) {
         loggers[MESSAGE] = &message;
         loggers[WARNING] = &warning;
         loggers[ERROR] = &error;
         loggers[DEBUG] = &debug;
 
         std::string LoggerLevelNames[] = {"MESSAGE", "WARNING", "ERROR", "DEBUG"};
-        std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
+        std::map<LoggerLevel, LoggerStream* >::iterator logger;
         for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
             (logger->second)->SetName(LoggerLevelNames[logger->first]);
         }
@@ -124,7 +122,7 @@ class G4VoxelDataLogger {
         SetLevel(level);
     };
     
-    ~G4VoxelDataLogger() {};
+    ~Logger() {};
 
   public:
     void SetVerbose(G4bool verbose) {
@@ -140,13 +138,13 @@ class G4VoxelDataLogger {
         UpdateLoggerLevels();
     };
 
-    G4VoxelDataLoggerLevel GetLevel() {
+    LoggerLevel GetLevel() {
         return this->level;
     };
 
   private:
     void UpdateLoggerLevels() {
-        std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* >::iterator logger;
+        std::map<LoggerLevel, LoggerStream* >::iterator logger;
         for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
             if (logger->first <= this->level) {
                 (logger->second)->SetActive(true);
@@ -158,14 +156,14 @@ class G4VoxelDataLogger {
 
   public:
     G4bool verbose;
-    G4VoxelDataLoggerLevel level;
+    LoggerLevel level;
 
-    std::map<G4VoxelDataLoggerLevel, G4VoxelDataLoggerStream* > loggers;
+    std::map<LoggerLevel, LoggerStream* > loggers;
 
-    G4VoxelDataLoggerStream message;
-    G4VoxelDataLoggerStream warning;
-    G4VoxelDataLoggerStream error;
-    G4VoxelDataLoggerStream debug;
+    LoggerStream message;
+    LoggerStream warning;
+    LoggerStream error;
+    LoggerStream debug;
 };
 
 #endif // G4VOXELDATALOGGER_H
