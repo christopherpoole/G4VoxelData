@@ -107,21 +107,7 @@ class LoggerStream : public std::ostream {
 
 class Logger {
   public:
-    Logger(LoggerLevel level) {
-        loggers[MESSAGE] = &message;
-        loggers[WARNING] = &warning;
-        loggers[ERROR] = &error;
-        loggers[DEBUG] = &debug;
-
-        std::string LoggerLevelNames[] = {"MESSAGE", "WARNING", "ERROR", "DEBUG"};
-        std::map<LoggerLevel, LoggerStream* >::iterator logger;
-        for (logger = loggers.begin(); logger != loggers.end(); ++logger) {
-            (logger->second)->SetName(LoggerLevelNames[logger->first]);
-        }
-       
-        SetLevel(level);
-    };
-    
+    Logger() {};
     ~Logger() {};
 
   public:
@@ -133,7 +119,7 @@ class Logger {
         return this->verbose;
     };
 
-    void SetLevel(G4VoxelDataLoggerLevel level) {
+    void SetLevel(LoggerLevel level) {
         this->level = level;
         UpdateLoggerLevels();
     };
@@ -141,6 +127,12 @@ class Logger {
     LoggerLevel GetLevel() {
         return this->level;
     };
+
+  protected:
+    void AddLoggerStream(std::string name, LoggerLevel level, LoggerStream *stream) {
+        stream->SetName(name);
+        loggers[level] = stream;
+    };  
 
   private:
     void UpdateLoggerLevels() {
@@ -158,12 +150,27 @@ class Logger {
     G4bool verbose;
     LoggerLevel level;
 
+    std::vector<std::string> logger_names;
     std::map<LoggerLevel, LoggerStream* > loggers;
+};
 
+
+class G4VoxelDataLogger : public Logger
+{
+  public:
+    G4VoxelDataLogger(LoggerLevel level) {
+        AddLoggerStream("MESSAGE", MESSAGE, &message);
+        AddLoggerStream("WARNING", WARNING, &warning);
+        AddLoggerStream("ERROR", ERROR, &error);
+        AddLoggerStream("DEBUG", DEBUG, &debug);
+    };
+
+  public:
     LoggerStream message;
     LoggerStream warning;
     LoggerStream error;
     LoggerStream debug;
+
 };
 
 #endif // G4VOXELDATALOGGER_H
