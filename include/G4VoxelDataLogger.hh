@@ -163,6 +163,8 @@ class G4VoxelDataLogger : public Logger
         AddLoggerStream("WARNING", WARNING, &warning);
         AddLoggerStream("ERROR", ERROR, &error);
         AddLoggerStream("DEBUG", DEBUG, &debug);
+
+        SetLevel(level);
     };
 
   public:
