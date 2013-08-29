@@ -35,6 +35,8 @@
 // STL //
 #include <iostream>
 #include <ostream>
+#include <string>
+#include <map>
 
 // GEANT4 //
 #include "globals.hh"
