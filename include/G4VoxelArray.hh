@@ -369,7 +369,7 @@ class G4VoxelArrayBase {
     };
 
     unsigned int GetLength() {
-        return this->length;
+        return this->length / sizeof(T);
     };
 
     unsigned int GetDimensions() {
