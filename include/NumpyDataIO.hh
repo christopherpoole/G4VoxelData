@@ -47,12 +47,14 @@ class NumpyDataIO : public G4VoxelDataIO {
   public:
     G4VoxelData* Read(G4String filename) {
 
+        logger->message << "Opening " << filename << std::endl;
         cnpy::NpyArray array = cnpy::npy_load(filename.c_str());
 
         unsigned int ndims = array.shape.size();
         std::vector<unsigned int> shape = array.shape;
 
         if (ndims == 2) {
+            logger->warning << "Adding extra dimension to 2D dataset." << std::endl;
             ndims = 3;
             shape.push_back(1);
         }
