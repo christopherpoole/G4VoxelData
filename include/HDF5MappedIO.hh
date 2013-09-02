@@ -115,7 +115,7 @@ class HDF5MappedIO : public G4VoxelArray<T> {
         }
 
         T* data_out = new T[length];
-        dataset.read(data_out, H5::PredType::NATIVE_INT, memspace, dataspace);
+        dataset.read(data_out, H5::PredType::NATIVE_DOUBLE, memspace, dataspace);
         
         // The value request will be in the memory window minus the offset
         // applied to the disk window.
@@ -164,6 +164,9 @@ class HDF5MappedIO : public G4VoxelArray<T> {
     //    G4Exception("G4VoxelData::Write", "Writing data not implemented.",
     //            FatalException, "");
     //};
+
+  protected:
+    void ReadFromDataset();
 
   private:
     H5::H5File file;
