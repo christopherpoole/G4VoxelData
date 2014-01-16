@@ -31,6 +31,8 @@
 
 #include "G4VUserPrimaryGeneratorAction.hh"
 #include "G4ParticleGun.hh"
+#include "G4SystemOfUnits.hh"
+
 
 class G4GeneralParticleSource;
 class G4Event;

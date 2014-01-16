@@ -43,9 +43,7 @@
 #include "G4Orb.hh"
 #include "G4LogicalVolume.hh"
 #include "G4PVPlacement.hh"
-
-
-//#include "SensitiveDetector.hh"
+#include "G4SystemOfUnits.hh"
 
 
 // Simple data structure for setpoints in hounsfiled -> G4Material ramp

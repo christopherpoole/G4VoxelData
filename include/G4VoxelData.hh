@@ -36,6 +36,7 @@
 
 // GEANT4 //
 #include "globals.hh"
+#include "G4SystemOfUnits.hh"
 
 
 typedef enum {

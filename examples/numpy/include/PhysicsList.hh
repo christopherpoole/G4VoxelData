@@ -32,6 +32,7 @@
 // GEANT4 //
 #include "globals.hh"
 #include "G4VModularPhysicsList.hh"
+#include "G4SystemOfUnits.hh"
 
 
 class PhysicsList: public G4VModularPhysicsList
