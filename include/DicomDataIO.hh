@@ -99,6 +99,10 @@ class DicomDataIO : public G4VoxelDataIO {
     };
 
   public:
+    G4VoxelData* _ReadDirectory(char* directory) {
+        return ReadDirectory(G4String(directory));
+    };
+
     G4VoxelData* ReadDirectory(G4String directory)
     {
         std::string prefix = "DicomDataIO::ReadDirectory: ";
@@ -192,6 +196,10 @@ class DicomDataIO : public G4VoxelDataIO {
         voxel_data->order = ROW_MAJOR;
 
         return voxel_data;
+    };
+
+    G4VoxelData* _Read(char* filename) {
+        return Read(G4String(filename));
     };
 
     G4VoxelData* Read(G4String filename) {

@@ -61,6 +61,9 @@ typedef enum {
 
 class G4VoxelData {
   public:
+    G4VoxelData(){
+    };
+  
     G4VoxelData(std::vector<char>* array,
                 unsigned int length,
                 unsigned int ndims,
