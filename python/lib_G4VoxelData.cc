@@ -29,6 +29,7 @@
 #include "G4VoxelData.hh"
 #include "G4VoxelArray.hh"
 #include "G4VoxelDataIO.hh"
+#include "G4VoxelDataParameterisation.hh"
 
 #include "DicomDataIO.hh"
 
@@ -41,13 +42,14 @@ using namespace boost::python;
 
 
 template <typename T>
-void expose_G4VoxelArray(std::string type_name)
+void expose(std::string type_name)
 {
-    std::string base_name = "G4VoxelArrayBase_" + type_name;
-    std::string      name = "G4VoxelArray_"     + type_name;
+    std::string voxel_array_base = "G4VoxelArrayBase_" + type_name;
+    std::string voxel_array = "G4VoxelArray_" + type_name;
+    std::string voxel_data_param = "G4VoxelDataParameterisation_" + type_name;
 
     class_<G4VoxelArrayBase<T>, G4VoxelArrayBase<T>*>
-        (base_name.c_str(), "The G4VoxelArray base class.")
+        (voxel_array_base.c_str(), "The G4VoxelArray base class.")
         .def("GetData", &G4VoxelArrayBase<T>::GetData, return_internal_reference<>())
         .def("GetVoxelSize", &G4VoxelArrayBase<T>::GetVoxelSize)
         .def("GetVolumeShape", &G4VoxelArrayBase<T>::GetVolumeShape)
@@ -64,7 +66,17 @@ void expose_G4VoxelArray(std::string type_name)
       
     class_<G4VoxelArray<T>, G4VoxelArray<T>*,
         bases<G4VoxelArrayBase<T> > >
-        (name.c_str(), "G4VoxelArray composed of G4VoxelData with a type.")
+        (voxel_array.c_str(), "G4VoxelArray composed of G4VoxelData with a type.")
+        ;
+
+    class_<G4VoxelDataParameterisation<T>, G4VoxelDataParameterisation<T>*>
+        (voxel_data_param.c_str(), "G4VoxelDataParameterisation for placing geometry.")
+        .def("GetNumberOfMaterials", &G4VoxelDataParameterisation<T>::GetNumberOfMaterials)
+        .def("GetLogicalVolume", &G4VoxelDataParameterisation<T>::GetLogicalVolume,
+                return_internal_reference<>())
+        .def("SetVisibility", &G4VoxelDataParameterisation<T>::SetVisibility)
+        .def("ShowPlanes", &G4VoxelDataParameterisation<T>::ShowPlanes)
+        .def("ShowMidPlanes", &G4VoxelDataParameterisation<T>::ShowMidPlanes)
         ;
 }
 
@@ -81,8 +93,8 @@ BOOST_PYTHON_MODULE(libG4VoxelData)
         .def("GetVerbose", &G4VoxelDataIO::GetVerbose)
         ;
 
-    expose_G4VoxelArray< int16_t>( "int16");
-    expose_G4VoxelArray<uint16_t>("uint16");
+    expose< int16_t>( "int16");
+    expose<uint16_t>("uint16");
 
     class_<DicomDataIO, DicomDataIO*,
         bases<G4VoxelDataIO> >

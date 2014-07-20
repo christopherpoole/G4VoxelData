@@ -44,6 +44,9 @@
 template <typename T>
 class G4VoxelArrayBase {
   public:
+    G4VoxelArrayBase() {
+    };
+  
     void Init() {
         this->cropped_shape = this->shape;
         this->order = COLUMN_MAJOR;
@@ -555,10 +558,10 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     }
 
     T RoundValue(T val, T rounder) {
-        if (val < 0) {
-            val = floor((val - rounder/2)/rounder)*rounder;
-        } else if (val > 0) {
+        if (val > 0) {
             val = floor((val + rounder/2)/rounder)*rounder;
+        } else {
+            val = floor((val - rounder/2)/rounder)*rounder;
         }
 
         return val;

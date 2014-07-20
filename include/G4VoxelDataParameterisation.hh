@@ -57,6 +57,8 @@ template <typename T, typename U=T>
 class G4VoxelDataParameterisation : public G4VNestedParameterisation
 {
 public:
+    G4VoxelDataParameterisation(){
+    };
 
     G4VoxelDataParameterisation(G4VoxelArray<T>* array,
         std::map<U, G4Material*> materials_map, G4VPhysicalVolume* mother_physical)
@@ -89,9 +91,9 @@ public:
         this->zth_offset = 0;
 
         // Rounding
-        this->rounder = NULL;
-        this->lower_bound = NULL;
-        this->upper_bound = NULL;
+        this->rounder = 0;
+        this->lower_bound = 0;
+        this->upper_bound = 0;
     };
 
     virtual ~G4VoxelDataParameterisation(){
