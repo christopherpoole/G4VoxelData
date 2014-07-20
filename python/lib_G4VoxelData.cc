@@ -40,6 +40,35 @@
 using namespace boost::python;
 
 
+template <typename T>
+void expose_G4VoxelArray(std::string type_name)
+{
+    std::string base_name = "G4VoxelArrayBase_" + type_name;
+    std::string      name = "G4VoxelArray_"     + type_name;
+
+    class_<G4VoxelArrayBase<T>, G4VoxelArrayBase<T>*>
+        (base_name.c_str(), "The G4VoxelArray base class.")
+        .def("GetData", &G4VoxelArrayBase<T>::GetData, return_internal_reference<>())
+        .def("GetVoxelSize", &G4VoxelArrayBase<T>::GetVoxelSize)
+        .def("GetVolumeShape", &G4VoxelArrayBase<T>::GetVolumeShape)
+        .def("GetOrigin", &G4VoxelArrayBase<T>::GetOrigin)
+        .def("CropX", &G4VoxelArrayBase<T>::CropX)
+        .def("CropY", &G4VoxelArrayBase<T>::CropY)
+        .def("CropZ", &G4VoxelArrayBase<T>::CropZ)
+        //.def("Crop", &G4VoxelArrayBase<uint16_t>::Crop)
+        .def("IsCropped", &G4VoxelArrayBase<T>::IsCropped)
+        .def("ClearCop", &G4VoxelArrayBase<T>::ClearCrop)
+        .def("GetLength", &G4VoxelArrayBase<T>::GetLength)
+        .def("GetDimensions", &G4VoxelArrayBase<T>::GetDimensions)
+        ;
+      
+    class_<G4VoxelArray<T>, G4VoxelArray<T>*,
+        bases<G4VoxelArrayBase<T> > >
+        (name.c_str(), "G4VoxelArray composed of G4VoxelData with a type.")
+        ;
+}
+
+
 BOOST_PYTHON_MODULE(libG4VoxelData)
 {
     class_<G4VoxelData, G4VoxelData*>
@@ -51,6 +80,9 @@ BOOST_PYTHON_MODULE(libG4VoxelData)
         .def("SetVerbose", &G4VoxelDataIO::SetVerbose)
         .def("GetVerbose", &G4VoxelDataIO::GetVerbose)
         ;
+
+    expose_G4VoxelArray< int16_t>( "int16");
+    expose_G4VoxelArray<uint16_t>("uint16");
 
     class_<DicomDataIO, DicomDataIO*,
         bases<G4VoxelDataIO> >
