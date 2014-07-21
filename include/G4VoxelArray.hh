@@ -481,9 +481,7 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
     };
 
     G4VoxelArray(G4VoxelData* data) {
-        Init(data);
-        
-        this->array = reinterpret_cast<std::vector<T>*>(data->array);
+        SetData(data);
     };
 
     G4VoxelArray(std::vector<unsigned int> shape, std::vector<double> spacing) {
@@ -517,6 +515,12 @@ class G4VoxelArray : public G4VoxelArrayBase<T> {
   
     virtual void Read(G4String, G4String) {};
     virtual void Write(G4String, G4String) {};
+
+    virtual void SetData(G4VoxelData* data) {
+        Init(data);
+        
+        this->array = reinterpret_cast<std::vector<T>*>(data->array);
+    };
 
     virtual void SetValue(T value, unsigned int x, unsigned int y, unsigned int z) {
         unsigned int index = GetIndex(x, y, z);
