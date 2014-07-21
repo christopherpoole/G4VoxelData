@@ -67,6 +67,10 @@ void expose(std::string type_name)
     class_<G4VoxelArray<T>, G4VoxelArray<T>*,
         bases<G4VoxelArrayBase<T> > >
         (voxel_array.c_str(), "G4VoxelArray composed of G4VoxelData with a type.")
+        .def("SetData", &G4VoxelArray<T>::SetData)
+        .def("Merge", &G4VoxelArray<T>::Merge)
+        .def("max", &G4VoxelArray<T>::GetMaxValue)
+        .def("min", &G4VoxelArray<T>::GetMinValue)
         ;
 
     class_<G4VoxelDataParameterisation<T>, G4VoxelDataParameterisation<T>*>
@@ -101,6 +105,7 @@ BOOST_PYTHON_MODULE(libG4VoxelData)
         ("DicomDataIO", "Read DICOM data into G4VoxelData.")
         .def("SetSort", &DicomDataIO::SetSort)
         .def("SetModality", &DicomDataIO::SetModality)
+        .def("SetAcquisitionNumber", &DicomDataIO::SetAcquisitionNumber)
         .def("SetSlope", &DicomDataIO::SetSlope)
         .def("IsOverrideSlope", &DicomDataIO::IsOverrideSlope)
         .def("ResetOverrideSlope", &DicomDataIO::ResetOverrideSlope)
